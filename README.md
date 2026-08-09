@@ -1,2 +1,224 @@
 # WFM4Cities
-A Three-Dimensional Analytical Method Based on Analogy to the Water Flooding Process: Revealing Urban Morphological Complexity via Progressive Threshold Scanning
+
+[![CI](https://github.com/zhangzuocughustccnu/WFM4Cities/actions/workflows/ci.yml/badge.svg)](https://github.com/zhangzuocughustccnu/WFM4Cities/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/WFM4Cities.svg)](https://pypi.org/project/WFM4Cities/)
+[![Python](https://img.shields.io/pypi/pyversions/WFM4Cities.svg)](https://pypi.org/project/WFM4Cities/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+WFM4Cities is a research-oriented Python package for constructing DEM-inspired
+urban scalar surfaces and analyzing them with Progressive Threshold Scanning
+(PTS). It supports a transparent point-to-surface workflow, a headless API and
+command-line interface, and an optional bilingual desktop interface.
+
+[简体中文说明](README_zh-CN.md)
+
+## What the package does
+
+- checks and visualizes point patterns;
+- interpolates scattered observations with
+  `scipy.interpolate.griddata(method="cubic")`;
+- fills cells outside the cubic interpolation hull with nearest-neighbor values;
+- min--max normalizes an analytical surface to \([0,1]\);
+- scans an ordered threshold sequence;
+- calculates projected area \(A(h)\), normalized excess volume \(V(h)\),
+  connected-component count \(N(h)\), and largest-component ratio \(L(h)\);
+- exports regular grids, full response trajectories, fixed summary features,
+  and overview figures;
+- provides optional GeoPandas/PySAL spatial diagnostics.
+
+WFM4Cities treats the vertical coordinate as the value of a specified urban
+attribute (for example, density, activity intensity, or building volume). It
+does **not** infer the meaning of that variable.
+
+## Scientific scope
+
+The water-flooding metaphor is an explanatory analogy for moving a horizontal
+threshold through a scalar surface. WFM4Cities is **not** a hydrodynamic flood
+model, a general DEM-production system, or an operational planning platform.
+Threshold order is not time. Hydrological applications require additional
+terrain, rainfall, drainage, flow-path, water-depth, and exposure information.
+
+## Installation
+
+Python 3.10--3.13 is supported. Python 3.11 is the recommended reference
+environment.
+
+### Install from the repository
+
+    git clone https://github.com/zhangzuocughustccnu/WFM4Cities.git
+    cd WFM4Cities
+    python -m venv .venv
+
+Activate the environment:
+
+    # Windows PowerShell
+    .venv\Scripts\Activate.ps1
+
+    # macOS/Linux
+    source .venv/bin/activate
+
+Then install:
+
+    python -m pip install --upgrade pip
+    python -m pip install -e .
+
+### Install the released package
+
+    python -m pip install WFM4Cities
+
+Until version 3.0.0 is published on PyPI, the command above may install the
+earlier 2.6 release. Use the repository installation for the current code.
+
+### Optional spatial diagnostics
+
+    python -m pip install "WFM4Cities[spatial]"
+
+### Conda environment
+
+    conda env create -f environment.yml
+    conda activate wfm4cities-3.0
+
+Tkinter is included with standard Python on Windows and macOS. On some Linux
+distributions it is a separate operating-system package (for example,
+`sudo apt install python3-tk` on Debian/Ubuntu).
+
+## Quick start
+
+### Desktop interface
+
+    wfm4cities gui
+
+Running `wfm4cities` with no subcommand also opens the interface. The
+historical `WFM4Cities` command remains available after installation; the
+`python WFM4Cities.py` launcher also remains available in a source checkout.
+
+### Deterministic headless demonstration
+
+    wfm4cities demo --output-dir demo_results --seed 42
+
+This writes:
+
+- `source_points.csv`;
+- `surface_normalized.csv`;
+- `pts_response.csv`;
+- `pts_features.json`;
+- `wfm4cities_overview.png`.
+
+### Analyze an existing grid
+
+The input must be a headerless numeric CSV matrix:
+
+    wfm4cities scan my_surface.csv --output-dir scan_results
+
+Use strict thresholding to exclude zero background cells at \(h=0\):
+
+    wfm4cities scan my_surface.csv --rule strict --output-dir scan_results
+
+### Construct a surface from points
+
+The CSV must contain `x` and `y` columns. An optional column named
+`value`, `density`, or `z` supplies the vertical value. If it is absent,
+WFM4Cities calculates a local neighbor count.
+
+    wfm4cities points observations.csv --grid-size 100 --method cubic
+
+## Python API
+
+    from wfm4cities import (
+        SimulationConfig,
+        build_surface,
+        extract_features,
+        progressive_threshold_scan,
+    )
+
+    config = SimulationConfig(
+        num_points=150,
+        noise_ratio=0.30,
+        num_clusters=4,
+        grid_size=100,
+        seed=2026,
+    )
+    model = build_surface(config)
+    result = progressive_threshold_scan(
+        model.grid_z,
+        threshold_count=51,
+        threshold_min=0.0,
+        threshold_max=0.95,
+        rule="inclusive",
+        connectivity=8,
+    )
+    features = extract_features(result)
+    print(features)
+
+The main response arrays are available as `result.A`, `result.V`,
+`result.N`, and `result.L`.
+
+## Threshold conventions
+
+Two explicit rules are available:
+
+- `inclusive`: retain cells satisfying \(z \ge h\). This is the default and
+  matches the controlled archetype analysis.
+- `strict`: retain cells satisfying \(z > h\). This excludes zero-valued
+  background cells when \(h=0\).
+
+The denominator of \(A(h)\) is the fixed analysis domain, not the number of
+currently positive cells. Components use eight-neighbor connectivity by
+default; four-neighbor connectivity is also available. \(V(h)\) is normalized
+by total intensity at \(h=0\).
+
+See [Method conventions](docs/METHOD.md) for the exact definitions.
+
+## Project structure
+
+    WFM4Cities/
+    ├── src/wfm4cities/       # maintained implementation
+    ├── src/WFM4Cities/       # compatibility namespace for 2.x users
+    ├── tests/                # automated regression tests
+    ├── examples/             # executable examples and sample data
+    ├── docs/                 # method, API, architecture, and release notes
+    ├── legacy/               # unmodified historical single-file script
+    ├── pyproject.toml        # package metadata and dependencies
+    ├── environment.yml       # recommended Conda environment
+    ├── CITATION.cff          # machine-readable software citation
+    └── LICENSE               # MIT license
+
+The maintained package does not create Tk windows or force a Matplotlib backend
+when imported. GUI code is loaded only when requested.
+
+## Reproducibility and testing
+
+Create a development environment and run:
+
+    python -m pip install -e ".[dev]"
+    ruff check .
+    pytest
+    python -m build
+    python -m twine check dist/*
+
+`requirements-tested.txt` records the exact numerical library versions used
+for the 3.0.0 release-candidate verification. `pyproject.toml` remains the
+authoritative dependency specification.
+
+## Method demonstration
+
+The physical immersion demonstration used to explain the threshold analogy is
+available at [YouTube](https://youtu.be/tMdRVbR-JpQ). It is explanatory only
+and does not define the numerical algorithm.
+
+## Citation
+
+Use GitHub's “Cite this repository” control or the metadata in
+[CITATION.cff](CITATION.cff). Add the article DOI to the citation metadata after
+the associated paper is published; no DOI is invented in this repository.
+
+## Contributing and support
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting a pull request.
+Reproducible bug reports can be filed through the repository's issue templates.
+Security-sensitive reports should follow [SECURITY.md](SECURITY.md).
+
+## License
+
+WFM4Cities is distributed under the [MIT License](LICENSE). The historical
+script is retained for provenance and is covered by the same repository license.

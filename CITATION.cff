@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use WFM4Cities, please cite this software and the associated article when available."
+title: "WFM4Cities: DEM-inspired urban scalar surfaces and progressive threshold scanning"
+type: software
+version: 3.0.0
+date-released: 2026-08-08
+license: MIT
+repository-code: "https://github.com/zhangzuocughustccnu/WFM4Cities"
+url: "https://github.com/zhangzuocughustccnu/WFM4Cities"
+keywords:
+  - urban morphology
+  - progressive threshold scanning
+  - scalar surface
+  - spatial analysis
+authors:
+  - family-names: Zhang
+    given-names: Zuo
+    affiliation: Central China Normal University
+  - family-names: Jiang
+    given-names: Yukun
+  - family-names: Wang
+    given-names: Zhe
