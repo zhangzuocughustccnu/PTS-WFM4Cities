@@ -167,6 +167,11 @@ Windows和macOS的标准Python通常已含Tkinter。部分Linux系统需要另�
 诊断模块。导入软件包时不再自动创建窗口，也不再强制选择TkAgg后端。旧脚本
 原样保存在 `legacy/` 中，仅用于版本追溯，不作为维护入口。
 
+## 开发者
+
+WFM4Cities由**张祚（Zuo Zhang）、江驭鲲（Yukun Jiang）和王哲（Zhe Wang）**开发。
+详见 [AUTHORS.md](AUTHORS.md)。
+
 ## 演示、引用与许可
 
 用于解释阈值类比的实体浸没演示见

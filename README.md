@@ -206,6 +206,11 @@ The physical immersion demonstration used to explain the threshold analogy is
 available at [YouTube](https://youtu.be/tMdRVbR-JpQ). It is explanatory only
 and does not define the numerical algorithm.
 
+## Authors
+
+WFM4Cities was developed by **Zuo Zhang, Yukun Jiang, and Zhe Wang**.
+See [AUTHORS.md](AUTHORS.md) for details.
+
 ## Citation
 
 Use GitHub's “Cite this repository” control or the metadata in
