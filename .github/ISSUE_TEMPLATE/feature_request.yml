@@ -1,0 +1,22 @@
+name: Feature request
+description: Propose a focused scientific or software enhancement
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Research or user problem
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+    validations:
+      required: true
+  - type: textarea
+    id: conventions
+    attributes:
+      label: Numerical conventions and compatibility impact
+      description: Identify any changes to thresholds, connectivity, normalization, interpolation, or outputs.
