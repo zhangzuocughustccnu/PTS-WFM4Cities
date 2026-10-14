@@ -528,12 +528,21 @@ def run_gui() -> None:
                 return
             threshold = float(self.variables["threshold"].get())
             self.figure.clear()
+            # Layout: the three-dimensional surface and the geometric
+            # responses are the main panels (two columns each); the point
+            # pattern, Ripley's K, the topological responses and the histograms
+            # are the smaller statistics panels beside them.
             grid = self.figure.add_gridspec(
-                2, 3, width_ratios=(1.0, 1.28, 1.0), height_ratios=(1.15, 1.0)
+                2,
+                4,
+                width_ratios=(1.55, 1.0, 1.0, 1.0),
+                height_ratios=(1.0, 0.92),
+                wspace=0.03,
+                hspace=0.05,
             )
 
             # ---- point pattern (or the imported surface) --------------------
-            map_ax = self.figure.add_subplot(grid[0, 0])
+            map_ax = self.figure.add_subplot(grid[0, 2])
             if len(self.model.points):
                 map_ax.set_facecolor(palette.DOMAIN_FILL)
                 map_ax.scatter(
@@ -580,7 +589,7 @@ def run_gui() -> None:
             self._style(map_ax)
 
             # ---- three-dimensional surface ---------------------------------
-            surface_ax = self.figure.add_subplot(grid[0, 1], projection="3d")
+            surface_ax = self.figure.add_subplot(grid[0, 0:2], projection="3d")
             light = LightSource(azdeg=315, altdeg=42)
             relief = light.shade(
                 self.model.grid_z,
@@ -609,7 +618,7 @@ def run_gui() -> None:
             )
             surface_ax.set_zlim(0, 1)
             surface_ax.view_init(elev=34, azim=-60)
-            surface_ax.set_box_aspect(None, zoom=1.18)
+            surface_ax.set_box_aspect((1.0, 1.0, 0.62), zoom=1.22)
             x0, x1 = float(self.model.grid_x.min()), float(self.model.grid_x.max())
             y0, y1 = float(self.model.grid_y.min()), float(self.model.grid_y.max())
             surface_ax.set_xticks(np.linspace(x0, x1, 11))
@@ -628,7 +637,7 @@ def run_gui() -> None:
             surface_ax.set_title(self.t("plot_surface", h=threshold))
 
             # ---- Ripley's K with the complete-spatial-randomness band -------
-            k_ax = self.figure.add_subplot(grid[0, 2])
+            k_ax = self.figure.add_subplot(grid[0, 3])
             if len(self.model.points) >= 4:
                 span = float(np.max(self.model.points) - np.min(self.model.points))
                 radii = np.linspace(0.02 * span, 0.50 * span, 40)
@@ -675,7 +684,7 @@ def run_gui() -> None:
             self._style(k_ax)
 
             # ---- geometric responses ---------------------------------------
-            geometry_ax = self.figure.add_subplot(grid[1, 0])
+            geometry_ax = self.figure.add_subplot(grid[1, 0:2])
             geometry_ax.plot(
                 self.result.thresholds,
                 self.result.area,
@@ -710,7 +719,7 @@ def run_gui() -> None:
             self._style(geometry_ax)
 
             # ---- topological responses --------------------------------------
-            topology_ax = self.figure.add_subplot(grid[1, 1])
+            topology_ax = self.figure.add_subplot(grid[1, 2])
             raw_n = np.asarray(self.result.component_count, dtype=float)
             raw_l = np.asarray(self.result.largest_component_ratio, dtype=float)
             topology_ax.plot(
@@ -762,7 +771,7 @@ def run_gui() -> None:
             self._style(topology_ax)
 
             # ---- coordinate histograms --------------------------------------
-            hist_grid = grid[1, 2].subgridspec(2, 1, hspace=0.14)
+            hist_grid = grid[1, 3].subgridspec(2, 1, hspace=0.06)
             x_ax = self.figure.add_subplot(hist_grid[0])
             y_ax = self.figure.add_subplot(hist_grid[1])
             if len(self.model.points):

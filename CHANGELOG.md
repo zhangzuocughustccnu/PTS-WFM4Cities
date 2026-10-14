@@ -3,6 +3,21 @@
 All notable changes follow the principles of
 [Keep a Changelog](https://keepachangelog.com/) and semantic versioning.
 
+## [3.1.5] - 2026-10-14
+
+### Fixed
+
+- the three-dimensional panel is drawn in a fixed box aspect instead of one
+  derived from the data ranges, which had flattened the box whenever the
+  vertical range was much smaller than the horizontal extent.
+
+### Changed
+
+- hierarchical two-by-four layout: the three-dimensional surface and the
+  geometric responses span two columns each as the main panels, while the point
+  pattern, Ripley's K, the topological responses and the histograms are the
+  smaller statistics panels; panel gaps are minimal.
+
 ## [3.1.4] - 2026-10-14
 
 ### Changed
