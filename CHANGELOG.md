@@ -3,6 +3,17 @@
 All notable changes follow the principles of
 [Keep a Changelog](https://keepachangelog.com/) and semantic versioning.
 
+## [3.1.9] - 2026-10-15
+
+### Changed
+
+- figure layout follows the author's sketch: two rows of three aligned
+  columns -- point pattern, three-dimensional surface and Ripley's K on the
+  first row; the two vertical sections stacked, the geometric responses and the
+  topological responses on the second;
+- the coordinate histograms are no longer part of the default figure;
+- the section profiles are coloured by height with the surface ramp, from orange
+  at the top to blue at the bottom, matching the three-dimensional panel.
 ## [3.1.8] - 2026-10-15
 
 ### Added

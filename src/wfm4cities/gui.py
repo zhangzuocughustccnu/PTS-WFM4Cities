@@ -568,17 +568,21 @@ def run_gui() -> None:
             # responses are the main panels (two columns each); the point
             # pattern, Ripley's K, the topological responses and the histograms
             # are the smaller statistics panels beside them.
+            # Layout after the author's sketch: two rows of three columns.
+            # Row 1: point pattern | three-dimensional surface | Ripley's K.
+            # Row 2: the two vertical sections stacked | geometric responses |
+            # topological responses.  Columns are equal so the panels align.
             grid = self.figure.add_gridspec(
+                2,
                 3,
-                4,
-                width_ratios=(1.55, 1.0, 1.0, 1.0),
-                height_ratios=(1.0, 0.92, 0.70),
-                wspace=0.03,
-                hspace=0.05,
+                width_ratios=(1.0, 1.0, 1.0),
+                height_ratios=(1.0, 1.0),
+                wspace=0.05,
+                hspace=0.07,
             )
 
             # ---- point pattern (or the imported surface) --------------------
-            map_ax = self.figure.add_subplot(grid[0, 2])
+            map_ax = self.figure.add_subplot(grid[0, 0])
             if len(self.model.points):
                 map_ax.set_facecolor(palette.DOMAIN_FILL)
                 map_ax.scatter(
@@ -625,7 +629,7 @@ def run_gui() -> None:
             self._style(map_ax)
 
             # ---- three-dimensional surface ---------------------------------
-            surface_ax = self.figure.add_subplot(grid[0, 0:2], projection="3d")
+            surface_ax = self.figure.add_subplot(grid[0, 1], projection="3d")
             light = LightSource(azdeg=315, altdeg=42)
             relief = light.shade(
                 self.model.grid_z,
@@ -679,7 +683,7 @@ def run_gui() -> None:
             surface_ax.set_title(self.t("plot_surface", h=threshold))
 
             # ---- Ripley's K with the complete-spatial-randomness band -------
-            k_ax = self.figure.add_subplot(grid[0, 3])
+            k_ax = self.figure.add_subplot(grid[0, 2])
             if len(self.model.points) >= 4:
                 span = float(np.max(self.model.points) - np.min(self.model.points))
                 radii = np.linspace(0.02 * span, 0.50 * span, 40)
@@ -726,7 +730,7 @@ def run_gui() -> None:
             self._style(k_ax)
 
             # ---- geometric responses ---------------------------------------
-            geometry_ax = self.figure.add_subplot(grid[1, 0:2])
+            geometry_ax = self.figure.add_subplot(grid[1, 1])
             geometry_ax.plot(
                 self.result.thresholds,
                 self.result.area,
@@ -812,85 +816,79 @@ def run_gui() -> None:
             )
             self._style(topology_ax)
 
-            # ---- coordinate histograms --------------------------------------
-            hist_grid = grid[1, 3].subgridspec(2, 1, hspace=0.06)
-            x_ax = self.figure.add_subplot(hist_grid[0])
-            y_ax = self.figure.add_subplot(hist_grid[1])
-            if len(self.model.points):
-                first, second = self.model.points[:, 0], self.model.points[:, 1]
-            else:
-                first = second = self.model.grid_z.ravel()
-            x_ax.hist(first, bins=18, color=palette.POINT_COLOR, alpha=0.85)
-            x_ax.set_ylabel("freq x", fontsize=7)
-            y_ax.hist(second, bins=18, color=palette.CENTER_COLOR, alpha=0.85)
-            y_ax.set_ylabel("freq y", fontsize=7)
-            for axis in (x_ax, y_ax):
-                axis.tick_params(labelsize=7)
-                self._style(axis)
-            x_ax.set_title(self.t("plot_histograms"), fontsize=9)
+            # ---- vertical sections, coloured by height ---------------------
+            from matplotlib.collections import LineCollection
 
-            # ---- vertical sections through the current water level --------
-            section_grid = grid[2, :].subgridspec(1, 2, wspace=0.16)
-            axis = np.asarray(self.model.grid_z)
+            section_grid = grid[1, 0].subgridspec(2, 1, hspace=0.30)
+            axis_z = np.asarray(self.model.grid_z)
             xs = np.asarray(self.model.grid_x[0, :])
             ys = np.asarray(self.model.grid_y[:, 0])
-            percent_x = float(self.variables["slice_x"].get()) / 100.0
-            percent_y = float(self.variables["slice_y"].get()) / 100.0
             column = int(
-                np.clip(round(percent_x * (axis.shape[1] - 1)), 0, axis.shape[1] - 1)
+                np.clip(
+                    round(
+                        float(self.variables["slice_x"].get())
+                        / 100.0
+                        * (axis_z.shape[1] - 1)
+                    ),
+                    0,
+                    axis_z.shape[1] - 1,
+                )
             )
             row = int(
-                np.clip(round(percent_y * (axis.shape[0] - 1)), 0, axis.shape[0] - 1)
+                np.clip(
+                    round(
+                        float(self.variables["slice_y"].get())
+                        / 100.0
+                        * (axis_z.shape[0] - 1)
+                    ),
+                    0,
+                    axis_z.shape[0] - 1,
+                )
             )
-            section_x = self.figure.add_subplot(section_grid[0])
-            section_x.plot(
-                ys, axis[:, column], color=palette.GEOMETRY_A_COLOR, linewidth=1.6
-            )
-            section_x.fill_between(
-                ys,
-                axis[:, column],
-                threshold,
-                where=axis[:, column] > threshold,
-                color=palette.POINT_COLOR,
-                alpha=0.35,
-                linewidth=0,
-            )
-            section_x.axhline(
-                threshold,
-                color=palette.WATER_COLOR,
-                linewidth=1.6,
-                label=f"h={threshold:.2f}",
-            )
-            section_x.set_title(f"{self.t('plot_section_x')} = {xs[column]:.2f}")
-            section_x.set_xlabel("y")
-            section_x.set_ylim(-0.02, 1.02)
-            section_x.legend(frameon=False, fontsize=7, loc="upper right")
-            self._style(section_x)
+            cmap = palette.surface_cmap()
 
+            def draw_section(ax, horizontal, profile, title):
+                points = np.column_stack((horizontal, profile))
+                segments = np.stack((points[:-1], points[1:]), axis=1)
+                colours = cmap(0.5 * (profile[:-1] + profile[1:]))
+                ax.add_collection(
+                    LineCollection(segments, colors=colours, linewidths=2.0)
+                )
+                ax.fill_between(
+                    horizontal,
+                    profile,
+                    threshold,
+                    where=profile > threshold,
+                    color=palette.WATER_COLOR,
+                    alpha=0.30,
+                    linewidth=0,
+                )
+                ax.axhline(
+                    threshold, color=palette.SPINE_GRAY, linestyle="--", linewidth=0.9
+                )
+                ax.set_xlim(float(horizontal.min()), float(horizontal.max()))
+                ax.set_ylim(-0.02, 1.02)
+                ax.set_title(title, fontsize=8)
+                ax.tick_params(labelsize=6)
+                self._style(ax)
+
+            section_x = self.figure.add_subplot(section_grid[0])
+            draw_section(
+                section_x,
+                ys,
+                axis_z[:, column],
+                f"{self.t('plot_section_x')} = {xs[column]:.2f}",
+            )
+            section_x.set_ylabel("z", fontsize=7)
             section_y = self.figure.add_subplot(section_grid[1])
-            section_y.plot(
-                xs, axis[row, :], color=palette.GEOMETRY_A_COLOR, linewidth=1.6
-            )
-            section_y.fill_between(
+            draw_section(
+                section_y,
                 xs,
-                axis[row, :],
-                threshold,
-                where=axis[row, :] > threshold,
-                color=palette.POINT_COLOR,
-                alpha=0.35,
-                linewidth=0,
+                axis_z[row, :],
+                f"{self.t('plot_section_y')} = {ys[row]:.2f}",
             )
-            section_y.axhline(
-                threshold,
-                color=palette.WATER_COLOR,
-                linewidth=1.6,
-                label=f"h={threshold:.2f}",
-            )
-            section_y.set_title(f"{self.t('plot_section_y')} = {ys[row]:.2f}")
-            section_y.set_xlabel("x")
-            section_y.set_ylim(-0.02, 1.02)
-            section_y.legend(frameon=False, fontsize=7, loc="upper right")
-            self._style(section_y)
+            section_y.set_xlabel("x", fontsize=7)
+            section_y.set_ylabel("z", fontsize=7)
 
             self.canvas.draw_idle()
 
