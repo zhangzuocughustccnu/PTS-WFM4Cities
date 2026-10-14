@@ -137,3 +137,71 @@ def write_json(path: str | Path, payload: dict[str, Any]) -> Path:
         )
         handle.write("\n")
     return target
+
+
+def list_csv_columns(path: str | Path) -> list[str]:
+    """Return the header of a CSV file without reading the whole file."""
+
+    with open(path, encoding="utf-8-sig", newline="") as handle:
+        reader = csv.reader(handle)
+        try:
+            header = next(reader)
+        except StopIteration as exc:  # pragma: no cover - empty file
+            raise ValueError(f"{path} is empty") from exc
+    columns = [name.strip() for name in header]
+    if not any(columns):
+        raise ValueError(f"{path} has no header row")
+    return columns
+
+
+def read_point_table(
+    path: str | Path,
+    x_col: str,
+    y_col: str,
+    value_col: str | None = None,
+) -> tuple[FloatArray, FloatArray | None]:
+    """Read selected columns of a CSV into coordinates and an attribute.
+
+    Unlike :func:`read_point_csv`, the column names are chosen by the caller,
+    which is what the import wizard of the desktop interface needs for
+    arbitrary point tables.
+    """
+
+    coordinates: list[list[float]] = []
+    attributes: list[float] = []
+    with open(path, encoding="utf-8-sig", newline="") as handle:
+        reader = csv.reader(handle)
+        try:
+            header = [name.strip() for name in next(reader)]
+        except StopIteration as exc:  # pragma: no cover - empty file
+            raise ValueError(f"{path} is empty") from exc
+        for role, column in (("x", x_col), ("y", y_col), ("value", value_col)):
+            if column is None:
+                continue
+            if column not in header:
+                raise ValueError(f"column {column!r} for {role} is not in {path}")
+        x_index, y_index = header.index(x_col), header.index(y_col)
+        value_index = header.index(value_col) if value_col is not None else None
+        for line_number, row in enumerate(reader, start=2):
+            if not row or all(not cell.strip() for cell in row):
+                continue
+            try:
+                x_value = float(row[x_index])
+                y_value = float(row[y_index])
+                attribute = float(row[value_index]) if value_index is not None else None
+            except (IndexError, ValueError) as exc:
+                raise ValueError(
+                    f"{path} line {line_number} is not numeric in the selected columns"
+                ) from exc
+            if attribute is not None and not np.isfinite(attribute):
+                raise ValueError(f"{path} line {line_number} has a non-finite value")
+            coordinates.append([x_value, y_value])
+            if attribute is not None:
+                attributes.append(attribute)
+    if not coordinates:
+        raise ValueError(f"{path} contains no data rows")
+    points = np.asarray(coordinates, dtype=float)
+    if not np.isfinite(points).all():
+        raise ValueError(f"{path} contains a non-finite coordinate")
+    values = np.asarray(attributes, dtype=float) if value_index is not None else None
+    return points, values
