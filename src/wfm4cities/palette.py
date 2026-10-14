@@ -15,12 +15,21 @@ from matplotlib.colors import LinearSegmentedColormap
 
 #: Surface-height ramp, ordered from the lowest to the highest value.
 SURFACE_RAMP: tuple[str, ...] = (
-    "#1B4F9C",
+    "#2A5CA8",
     "#2E8BC0",
     "#4FB08A",
     "#E3C64B",
-    "#C8452F",
+    "#C0392B",
 )
+
+#: Fill of the two-dimensional domain in the point-pattern panel.  The
+#: four-model figure of the accompanying study fills the bounded study domain
+#: with this light blue, which keeps the orange observations readable.
+DOMAIN_FILL = "#AACCEE"
+
+#: Grey panel background used when the individual panels are assembled into a
+#: composite figure, as in the four-model figure of the accompanying study.
+FIGURE_PANEL = "#D9D9D9"
 
 #: Primary colour of the point pattern.
 POINT_COLOR = "#E8842B"
@@ -40,7 +49,7 @@ SPINE_GRAY = "#595959"
 
 #: Categorical colours and markers used for up to four series (for example the
 #: four example cities of the accompanying study).
-CITY_COLORS: tuple[str, ...] = ("#1B4F9C", "#E8842B", "#2E8B57", "#8E5AA8")
+CITY_COLORS: tuple[str, ...] = ("#2A5CA8", "#E8842B", "#2E8B57", "#8E5AA8")
 CITY_MARKERS: tuple[str, ...] = ("o", "s", "^", "D")
 
 
