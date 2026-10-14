@@ -1,13 +1,13 @@
-# WFM4Cities
+# PTS-WFM4Cities
 
 [![CI](https://github.com/zhangzuocughustccnu/WFM4Cities/actions/workflows/ci.yml/badge.svg)](https://github.com/zhangzuocughustccnu/WFM4Cities/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/PTS-WFM4Cities.svg)](https://pypi.org/project/PTS-WFM4Cities/)
 [![Python](https://img.shields.io/pypi/pyversions/PTS-WFM4Cities.svg)](https://pypi.org/project/PTS-WFM4Cities/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-WFM4Cities is a research-oriented Python package for constructing DEM-inspired
-urban scalar surfaces and analyzing them with Progressive Threshold Scanning
-(PTS). It supports a transparent point-to-surface workflow, a headless API and
+PTS-WFM4Cities is a research-oriented Python package for constructing
+DEM-inspired urban scalar surfaces and analyzing them with Progressive
+Threshold Scanning (PTS). It supports a transparent point-to-surface workflow, a headless API and
 command-line interface, and an optional bilingual desktop interface.
 
 [简体中文说明](README_zh-CN.md)

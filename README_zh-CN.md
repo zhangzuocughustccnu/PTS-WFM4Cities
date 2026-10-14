@@ -1,6 +1,6 @@
-# WFM4Cities
+# PTS-WFM4Cities
 
-WFM4Cities是一款面向科研的Python软件包，用于构建受数字高程模型（DEM）
+PTS-WFM4Cities是一款面向科研的Python软件包，用于构建受数字高程模型（DEM）
 思想启发的城市标量表面，并实施渐进式阈值扫描（Progressive Threshold
 Scanning，PTS）。新版同时提供可复用的Python API、命令行批处理方式和中英
 双语桌面界面。

@@ -3,6 +3,14 @@
 All notable changes follow the principles of
 [Keep a Changelog](https://keepachangelog.com/) and semantic versioning.
 
+## [3.1.7] - 2026-10-15
+
+### Fixed
+
+- the project heading of the long description is now `PTS-WFM4Cities`, so the
+  project page of the package carries the full name; 3.1.6 shipped the new
+  colour scheme but still opened its description with the old short title.
+
 ## [3.1.6] - 2026-10-14
 
 ### Changed
