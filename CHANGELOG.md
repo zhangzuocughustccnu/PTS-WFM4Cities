@@ -3,6 +3,16 @@
 All notable changes follow the principles of
 [Keep a Changelog](https://keepachangelog.com/) and semantic versioning.
 
+## [3.1.8] - 2026-10-15
+
+### Added
+
+- vertical section analysis: two sliders place an X and a Y section through the
+  surface and the two profiles are drawn with the submerged part shaded and the
+  current water level marked;
+- a view selector (ISO / Top / Side) for the three-dimensional panel, alongside
+  the existing interactive rotation.
+
 ## [3.1.7] - 2026-10-15
 
 ### Fixed

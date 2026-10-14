@@ -47,6 +47,11 @@ STRINGS: dict[str, dict[str, str]] = {
     "plot_imported": {"en": "Imported surface", "zh": "导入表面"},
     "plot_surface": {"en": "3-D surface, h={h:.2f}", "zh": "三维表面, h={h:.2f}"},
     "plot_geometry": {"en": "Geometric responses", "zh": "几何响应"},
+    "label_slice_x": {"en": "Section X (%)", "zh": "X 切面 (%)"},
+    "label_slice_y": {"en": "Section Y (%)", "zh": "Y 切面 (%)"},
+    "label_view": {"en": "View", "zh": "视角"},
+    "plot_section_x": {"en": "Section at x", "zh": "x 处剖面"},
+    "plot_section_y": {"en": "Section at y", "zh": "y 处剖面"},
     "plot_ripley": {
         "en": "Ripley's K(r) and the CSR band",
         "zh": "Ripley K(r) 与 CSR 置信带",

@@ -150,6 +150,9 @@ def run_gui() -> None:
                 "min_distance": tk.DoubleVar(value=0.0),
                 "grid_size": tk.IntVar(value=100),
                 "seed": tk.IntVar(value=42),
+                "slice_x": tk.DoubleVar(value=50.0),
+                "slice_y": tk.DoubleVar(value=50.0),
+                "view": tk.StringVar(value="ISO"),
                 "threshold": tk.DoubleVar(value=0.40),
                 "rule": tk.StringVar(value="inclusive"),
             }
@@ -282,6 +285,39 @@ def run_gui() -> None:
                 variable=self.variables["threshold"],
                 command=lambda _value: self.draw(),
             ).grid(row=base + 2, column=0, columnspan=2, sticky="ew", pady=3)
+
+            for offset, (key, variable) in enumerate(
+                (("label_slice_x", "slice_x"), ("label_slice_y", "slice_y"))
+            ):
+                self._label(controls, key).grid(
+                    row=base + 17 + offset * 2, column=0, columnspan=2, sticky="w"
+                )
+                self._tk.Scale(
+                    controls,
+                    from_=0.0,
+                    to=100.0,
+                    orient="horizontal",
+                    variable=self.variables[variable],
+                    command=lambda _value: self.draw(),
+                ).grid(
+                    row=base + 18 + offset * 2,
+                    column=0,
+                    columnspan=2,
+                    sticky="ew",
+                    pady=1,
+                )
+            self._label(controls, "label_view").grid(
+                row=base + 21, column=0, sticky="w", pady=2
+            )
+            view_box = self._ttk.Combobox(
+                controls,
+                textvariable=self.variables["view"],
+                values=("ISO", "Top", "Side"),
+                state="readonly",
+                width=10,
+            )
+            view_box.grid(row=base + 21, column=1, sticky="ew", pady=2)
+            view_box.bind("<<ComboboxSelected>>", lambda _event: self.draw())
 
             self._label(controls, "label_rule").grid(
                 row=base + 3, column=0, sticky="w", pady=2
@@ -533,10 +569,10 @@ def run_gui() -> None:
             # pattern, Ripley's K, the topological responses and the histograms
             # are the smaller statistics panels beside them.
             grid = self.figure.add_gridspec(
-                2,
+                3,
                 4,
                 width_ratios=(1.55, 1.0, 1.0, 1.0),
-                height_ratios=(1.0, 0.92),
+                height_ratios=(1.0, 0.92, 0.70),
                 wspace=0.03,
                 hspace=0.05,
             )
@@ -617,7 +653,13 @@ def run_gui() -> None:
                 linewidth=0,
             )
             surface_ax.set_zlim(0, 1)
-            surface_ax.view_init(elev=34, azim=-60)
+            view = str(self.variables["view"].get())
+            if view == "Top":
+                surface_ax.view_init(elev=78, azim=-90)
+            elif view == "Side":
+                surface_ax.view_init(elev=4, azim=-90)
+            else:
+                surface_ax.view_init(elev=34, azim=-60)
             surface_ax.set_box_aspect((1.0, 1.0, 0.62), zoom=1.22)
             x0, x1 = float(self.model.grid_x.min()), float(self.model.grid_x.max())
             y0, y1 = float(self.model.grid_y.min()), float(self.model.grid_y.max())
@@ -786,6 +828,69 @@ def run_gui() -> None:
                 axis.tick_params(labelsize=7)
                 self._style(axis)
             x_ax.set_title(self.t("plot_histograms"), fontsize=9)
+
+            # ---- vertical sections through the current water level --------
+            section_grid = grid[2, :].subgridspec(1, 2, wspace=0.16)
+            axis = np.asarray(self.model.grid_z)
+            xs = np.asarray(self.model.grid_x[0, :])
+            ys = np.asarray(self.model.grid_y[:, 0])
+            percent_x = float(self.variables["slice_x"].get()) / 100.0
+            percent_y = float(self.variables["slice_y"].get()) / 100.0
+            column = int(
+                np.clip(round(percent_x * (axis.shape[1] - 1)), 0, axis.shape[1] - 1)
+            )
+            row = int(
+                np.clip(round(percent_y * (axis.shape[0] - 1)), 0, axis.shape[0] - 1)
+            )
+            section_x = self.figure.add_subplot(section_grid[0])
+            section_x.plot(
+                ys, axis[:, column], color=palette.GEOMETRY_A_COLOR, linewidth=1.6
+            )
+            section_x.fill_between(
+                ys,
+                axis[:, column],
+                threshold,
+                where=axis[:, column] > threshold,
+                color=palette.POINT_COLOR,
+                alpha=0.35,
+                linewidth=0,
+            )
+            section_x.axhline(
+                threshold,
+                color=palette.WATER_COLOR,
+                linewidth=1.6,
+                label=f"h={threshold:.2f}",
+            )
+            section_x.set_title(f"{self.t('plot_section_x')} = {xs[column]:.2f}")
+            section_x.set_xlabel("y")
+            section_x.set_ylim(-0.02, 1.02)
+            section_x.legend(frameon=False, fontsize=7, loc="upper right")
+            self._style(section_x)
+
+            section_y = self.figure.add_subplot(section_grid[1])
+            section_y.plot(
+                xs, axis[row, :], color=palette.GEOMETRY_A_COLOR, linewidth=1.6
+            )
+            section_y.fill_between(
+                xs,
+                axis[row, :],
+                threshold,
+                where=axis[row, :] > threshold,
+                color=palette.POINT_COLOR,
+                alpha=0.35,
+                linewidth=0,
+            )
+            section_y.axhline(
+                threshold,
+                color=palette.WATER_COLOR,
+                linewidth=1.6,
+                label=f"h={threshold:.2f}",
+            )
+            section_y.set_title(f"{self.t('plot_section_y')} = {ys[row]:.2f}")
+            section_y.set_xlabel("x")
+            section_y.set_ylim(-0.02, 1.02)
+            section_y.legend(frameon=False, fontsize=7, loc="upper right")
+            self._style(section_y)
 
             self.canvas.draw_idle()
 
