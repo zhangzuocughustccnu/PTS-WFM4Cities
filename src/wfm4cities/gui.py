@@ -575,8 +575,8 @@ def run_gui() -> None:
             grid = self.figure.add_gridspec(
                 2,
                 3,
-                width_ratios=(1.0, 1.0, 1.0),
-                height_ratios=(1.0, 1.0),
+                width_ratios=(1.0, 1.18, 1.0),
+                height_ratios=(1.05, 0.86),
                 wspace=0.05,
                 hspace=0.07,
             )
@@ -819,7 +819,7 @@ def run_gui() -> None:
             # ---- vertical sections, coloured by height ---------------------
             from matplotlib.collections import LineCollection
 
-            section_grid = grid[1, 0].subgridspec(2, 1, hspace=0.30)
+            section_grid = grid[1, 0].subgridspec(2, 1, hspace=0.10)
             axis_z = np.asarray(self.model.grid_z)
             xs = np.asarray(self.model.grid_x[0, :])
             ys = np.asarray(self.model.grid_y[:, 0])
@@ -868,7 +868,7 @@ def run_gui() -> None:
                 )
                 ax.set_xlim(float(horizontal.min()), float(horizontal.max()))
                 ax.set_ylim(-0.02, 1.02)
-                ax.set_title(title, fontsize=8)
+                ax.set_title(title, fontsize=7)
                 ax.tick_params(labelsize=6)
                 self._style(ax)
 

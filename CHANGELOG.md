@@ -3,6 +3,15 @@
 All notable changes follow the principles of
 [Keep a Changelog](https://keepachangelog.com/) and semantic versioning.
 
+## [3.1.10] - 2026-10-15
+
+### Changed
+
+- the two vertical sections sit closer together;
+- the lower row is shorter, so the geometric and topological responses are
+  closer to square while the sections keep the same height as the geometric
+  panel beside them;
+- the three-dimensional panel is widened slightly within the aligned grid.
 ## [3.1.9] - 2026-10-15
 
 ### Changed
