@@ -3,6 +3,14 @@
 All notable changes follow the principles of
 [Keep a Changelog](https://keepachangelog.com/) and semantic versioning.
 
+## [3.1.2] - 2026-10-14
+
+### Changed
+
+- the surface ramp is now the black-to-yellow ramp of the accompanying study's
+  city figure and supplementary city map, so the package and the manuscript
+  share one palette; the categorical colours stay as in the manuscript.
+
 ## [3.1.1] - 2026-10-14
 
 ### Fixed
