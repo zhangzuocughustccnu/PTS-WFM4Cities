@@ -52,16 +52,17 @@ Scanning，PTS）。新版同时提供可复用的Python API、命令行批处�
     python -m pip install --upgrade pip
     python -m pip install -e .
 
-正式发布3.0.0后，也可以直接安装：
+3.0.0已发布，可直接安装：
 
-    python -m pip install WFM4Cities
+    python -m pip install PTS-WFM4Cities
 
-在3.0.0尚未上传PyPI之前，上述命令可能仍会安装旧的2.6版，因此此时应优先
-采用GitHub源码安装。
+PyPI上的发行名为 `PTS-WFM4Cities`。历史版本2.6仍以较短的 `WFM4Cities`
+为名发布，且属于另一个PyPI账号，因此 `pip install WFM4Cities` 装到的是旧的
+2.6版；请始终使用 `PTS-WFM4Cities` 安装3.0版。
 
 如需GeoPandas/PySAL空间诊断：
 
-    python -m pip install "WFM4Cities[spatial]"
+    python -m pip install "PTS-WFM4Cities[spatial]"
 
 使用Conda：
 

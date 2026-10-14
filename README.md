@@ -1,8 +1,8 @@
 # WFM4Cities
 
 [![CI](https://github.com/zhangzuocughustccnu/WFM4Cities/actions/workflows/ci.yml/badge.svg)](https://github.com/zhangzuocughustccnu/WFM4Cities/actions/workflows/ci.yml)
-[![PyPI](https://img.shields.io/pypi/v/WFM4Cities.svg)](https://pypi.org/project/WFM4Cities/)
-[![Python](https://img.shields.io/pypi/pyversions/WFM4Cities.svg)](https://pypi.org/project/WFM4Cities/)
+[![PyPI](https://img.shields.io/pypi/v/PTS-WFM4Cities.svg)](https://pypi.org/project/PTS-WFM4Cities/)
+[![Python](https://img.shields.io/pypi/pyversions/PTS-WFM4Cities.svg)](https://pypi.org/project/PTS-WFM4Cities/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 WFM4Cities is a research-oriented Python package for constructing DEM-inspired
@@ -64,14 +64,16 @@ Then install:
 
 ### Install the released package
 
-    python -m pip install WFM4Cities
+    python -m pip install PTS-WFM4Cities
 
-Until version 3.0.0 is published on PyPI, the command above may install the
-earlier 2.6 release. Use the repository installation for the current code.
+The PyPI distribution is named `PTS-WFM4Cities`. The historical 2.6 release is
+still published under the shorter name `WFM4Cities`, which belongs to a
+different PyPI account, so `pip install WFM4Cities` installs that older
+release. Always install `PTS-WFM4Cities` to get version 3.0.
 
 ### Optional spatial diagnostics
 
-    python -m pip install "WFM4Cities[spatial]"
+    python -m pip install "PTS-WFM4Cities[spatial]"
 
 ### Conda environment
 

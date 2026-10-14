@@ -61,6 +61,11 @@ macOS/Linux将激活命令替换为 `source .venv/bin/activate`。
 
 ## 6. PyPI发布
 
+> **2026-10-14 更新。** PyPI上的 `WFM4Cities` 项目由账号 `JIANGYUKUN` 持有，
+> 本仓库维护者无上传权限。因此3.0.0改以发行名 `PTS-WFM4Cities` 发布，该项目
+> 由 `zhangzuocughustccnu` 持有。下文出现 `WFM4Cities` 项目名处，发布时请
+> 一律替换为 `PTS-WFM4Cities`。
+
 PyPI上已有 `WFM4Cities 2.6`，因此新版本必须使用更高版本号；本项目已经
 统一设为 `3.0.0`。当前PyPI页面显示维护者为 `JIANGYUKUN`。正式发布前，
 该维护者需要完成以下任一操作：

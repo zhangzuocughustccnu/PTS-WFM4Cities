@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/p/WFM4Cities
+      url: https://pypi.org/p/PTS-WFM4Cities
     permissions:
       id-token: write
     steps:

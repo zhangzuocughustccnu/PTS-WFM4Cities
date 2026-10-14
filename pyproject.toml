@@ -3,7 +3,7 @@ requires = ["setuptools>=77.0.3"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "WFM4Cities"
+name = "PTS-WFM4Cities"
 dynamic = ["version"]
 description = "DEM-inspired urban scalar surfaces and progressive threshold scanning"
 readme = "README.md"

@@ -1,7 +1,7 @@
 """Optional GeoPandas/PySAL diagnostics.
 
 The core package does not require the geospatial stack.  Install
-``WFM4Cities[spatial]`` before calling this module.
+``PTS-WFM4Cities[spatial]`` before calling this module.
 """
 
 from __future__ import annotations
@@ -37,7 +37,7 @@ def morans_i(
         from shapely.geometry import Point
     except ImportError as exc:
         raise ImportError(
-            "optional spatial dependencies are missing; install WFM4Cities[spatial]"
+            "optional spatial dependencies are missing; install PTS-WFM4Cities[spatial]"
         ) from exc
 
     coordinates = np.asarray(points, dtype=float)

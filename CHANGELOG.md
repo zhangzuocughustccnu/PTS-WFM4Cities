@@ -26,7 +26,9 @@ All notable changes follow the principles of
   spatial, CLI, and GUI modules;
 - supported Python is now 3.10--3.13;
 - runtime dependencies use compatible ranges rather than exact historical pins;
-- the canonical version is consistently 3.0.0.
+- the canonical version is consistently 3.0.0;
+- the PyPI distribution is published as `PTS-WFM4Cities`; the historical 2.6
+  release stays under the shorter name `WFM4Cities`.
 
 ### Fixed
 

@@ -38,6 +38,14 @@ Before the production release, upload the wheel and source distribution to
 TestPyPI or configure a TestPyPI trusted publisher. Verify installation in a
 fresh environment.
 
+## Distribution name
+
+The `WFM4Cities` project on PyPI belongs to a different account and cannot
+receive uploads from the maintainers of this repository. Version 3.0.0 is
+therefore published under the distribution name `PTS-WFM4Cities`, which is
+owned by `zhangzuocughustccnu`. Wherever the notes below mention the
+`WFM4Cities` project, read `PTS-WFM4Cities` for releases of this repository.
+
 ## Trusted publishing
 
 The included `.github/workflows/publish.yml` uses PyPI trusted publishing and
