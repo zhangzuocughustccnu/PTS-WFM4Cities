@@ -3,6 +3,13 @@
 All notable changes follow the principles of
 [Keep a Changelog](https://keepachangelog.com/) and semantic versioning.
 
+## [3.1.12] - 2026-10-15
+
+### Changed
+
+- the grid is fully uniform: equal column widths and equal row heights, so the
+  K(r), geometric and topological panels have identical proportions;
+- tighter title and label padding, so each panel fills its allotted box.
 ## [3.1.11] - 2026-10-15
 
 ### Changed

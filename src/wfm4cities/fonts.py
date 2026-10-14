@@ -93,6 +93,8 @@ def apply(directory: str | os.PathLike[str] | None = None) -> list[str]:
     rcParams["xtick.labelsize"] = 7.5
     rcParams["ytick.labelsize"] = 7.5
     rcParams["legend.fontsize"] = 7.5
+    rcParams["axes.titlepad"] = 2.5
+    rcParams["axes.labelpad"] = 1.5
     if extra:
         families = [*families, "registered: " + ", ".join(extra)]
     return families

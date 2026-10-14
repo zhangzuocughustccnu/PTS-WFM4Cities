@@ -576,10 +576,10 @@ def run_gui() -> None:
             grid = self.figure.add_gridspec(
                 2,
                 3,
-                width_ratios=(1.0, 1.18, 1.0),
-                height_ratios=(1.05, 0.86),
-                wspace=0.015,
-                hspace=0.025,
+                width_ratios=(1.0, 1.0, 1.0),
+                height_ratios=(1.0, 1.0),
+                wspace=0.02,
+                hspace=0.03,
             )
 
             # ---- point pattern (or the imported surface) --------------------
