@@ -357,10 +357,10 @@ def run_gui() -> None:
             self.figure = figure_class(
                 figsize=(11.6, 7.9),
                 constrained_layout={
-                    "w_pad": 0.40,
-                    "h_pad": 0.30,
-                    "wspace": 0.05,
-                    "hspace": 0.06,
+                    "w_pad": 0.14,
+                    "h_pad": 0.10,
+                    "wspace": 0.015,
+                    "hspace": 0.025,
                 },
             )
             self.canvas = canvas_class(self.figure, master=figure_frame)
@@ -556,6 +556,7 @@ def run_gui() -> None:
         def _style(self, axis) -> None:
             axis.set_facecolor(palette.PANEL_FACE)
             axis.grid(True, color=palette.GRID_GRAY, linewidth=0.5, alpha=0.9)
+            axis.tick_params(pad=1.5, length=2.0)
             for spine in axis.spines.values():
                 spine.set_color(palette.SPINE_GRAY)
 
@@ -577,8 +578,8 @@ def run_gui() -> None:
                 3,
                 width_ratios=(1.0, 1.18, 1.0),
                 height_ratios=(1.05, 0.86),
-                wspace=0.05,
-                hspace=0.07,
+                wspace=0.015,
+                hspace=0.025,
             )
 
             # ---- point pattern (or the imported surface) --------------------
@@ -819,7 +820,7 @@ def run_gui() -> None:
             # ---- vertical sections, coloured by height ---------------------
             from matplotlib.collections import LineCollection
 
-            section_grid = grid[1, 0].subgridspec(2, 1, hspace=0.10)
+            section_grid = grid[1, 0].subgridspec(2, 1, hspace=0.06)
             axis_z = np.asarray(self.model.grid_z)
             xs = np.asarray(self.model.grid_x[0, :])
             ys = np.asarray(self.model.grid_y[:, 0])

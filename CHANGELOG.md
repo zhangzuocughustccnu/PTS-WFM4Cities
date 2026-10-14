@@ -3,6 +3,13 @@
 All notable changes follow the principles of
 [Keep a Changelog](https://keepachangelog.com/) and semantic versioning.
 
+## [3.1.11] - 2026-10-15
+
+### Changed
+
+- panel spacing reduced to the practical minimum: gridspec and
+  constrained-layout gaps, axes tick padding, and the gap between the two
+  vertical sections.
 ## [3.1.10] - 2026-10-15
 
 ### Changed
