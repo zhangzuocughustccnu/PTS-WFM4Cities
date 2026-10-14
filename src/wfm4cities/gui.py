@@ -42,6 +42,44 @@ def smooth_for_display(values, window: int = SMOOTH_WINDOW):
     return smoothed
 
 
+def ripley_envelope(points, radii, *, repeats: int = 20, seed: int = 20261014):
+    """Return the CSR mean and 95% pointwise envelope of Ripley's K.
+
+    The envelope comes from complete-spatial-randomness simulations over the
+    same bounding box, which is the reference band drawn in the manuscript.
+    """
+
+    import numpy as np
+
+    from .core import ripley_k
+
+    coords = np.asarray(points, dtype=float)
+    if coords.shape[0] < 4:
+        raise ValueError("at least four observations are required")
+    low = coords.min(axis=0)
+    high = coords.max(axis=0)
+    area = float((high[0] - low[0]) * (high[1] - low[1]))
+    if area <= 0.0:
+        raise ValueError("the observations must span a non-degenerate extent")
+    generator = np.random.default_rng(seed)
+    curves = []
+    for _ in range(repeats):
+        sample = np.column_stack(
+            (
+                generator.uniform(low[0], high[0], coords.shape[0]),
+                generator.uniform(low[1], high[1], coords.shape[0]),
+            )
+        )
+        curves.append(ripley_k(sample, radii, area=area))
+    stack = np.asarray(curves, dtype=float)
+    return (
+        np.asarray(ripley_k(coords, radii, area=area), dtype=float),
+        stack.mean(axis=0),
+        np.percentile(stack, 2.5, axis=0),
+        np.percentile(stack, 97.5, axis=0),
+    )
+
+
 def run_gui() -> None:
     """Launch the PTS-WFM4Cities graphical interface."""
 
@@ -280,7 +318,7 @@ def run_gui() -> None:
 
             figure_frame = ttk_module.Frame(container)
             figure_frame.grid(row=0, column=1, sticky="nsew")
-            self.figure = figure_class(figsize=(10.4, 7.6), constrained_layout=True)
+            self.figure = figure_class(figsize=(11.6, 7.9), constrained_layout=True)
             self.canvas = canvas_class(self.figure, master=figure_frame)
             self.canvas.get_tk_widget().pack(fill="both", expand=True)
 
@@ -482,14 +520,18 @@ def run_gui() -> None:
                 return
             threshold = float(self.variables["threshold"].get())
             self.figure.clear()
+            grid = self.figure.add_gridspec(
+                2, 3, width_ratios=(1.0, 1.25, 1.0), height_ratios=(1.18, 1.0)
+            )
 
-            map_ax = self.figure.add_subplot(221)
+            # ---- point pattern (or the imported surface) --------------------
+            map_ax = self.figure.add_subplot(grid[0, 0])
             if len(self.model.points):
                 map_ax.set_facecolor(palette.DOMAIN_FILL)
                 map_ax.scatter(
                     self.model.points[:, 0],
                     self.model.points[:, 1],
-                    s=16,
+                    s=17,
                     color=palette.POINT_COLOR,
                     edgecolors="white",
                     linewidths=0.3,
@@ -498,11 +540,11 @@ def run_gui() -> None:
                     map_ax.scatter(
                         self.model.centers[:, 0],
                         self.model.centers[:, 1],
-                        s=70,
+                        s=85,
                         marker="*",
                         color=palette.CENTER_COLOR,
                         edgecolors="white",
-                        linewidths=0.6,
+                        linewidths=0.7,
                         zorder=3,
                     )
                 map_ax.set_title(self.t("plot_points"))
@@ -521,7 +563,7 @@ def run_gui() -> None:
                     self.imported_points[:, 1],
                     s=7,
                     color=palette.POINT_COLOR,
-                    alpha=0.75,
+                    alpha=0.8,
                     linewidths=0,
                 )
             map_ax.set_aspect("equal", adjustable="box")
@@ -529,7 +571,8 @@ def run_gui() -> None:
             map_ax.set_ylabel("y")
             self._style(map_ax)
 
-            surface_ax = self.figure.add_subplot(222, projection="3d")
+            # ---- three-dimensional surface ---------------------------------
+            surface_ax = self.figure.add_subplot(grid[0, 1], projection="3d")
             light = LightSource(azdeg=315, altdeg=42)
             relief = light.shade(
                 self.model.grid_z,
@@ -558,31 +601,94 @@ def run_gui() -> None:
             )
             surface_ax.set_zlim(0, 1)
             surface_ax.view_init(elev=34, azim=-60)
+            x0, x1 = float(self.model.grid_x.min()), float(self.model.grid_x.max())
+            y0, y1 = float(self.model.grid_y.min()), float(self.model.grid_y.max())
+            surface_ax.set_xticks(np.linspace(x0, x1, 11))
+            surface_ax.set_yticks(np.linspace(y0, y1, 11))
+            surface_ax.set_zticks(np.linspace(0.0, 1.0, 6))
+            for axis in (surface_ax.xaxis, surface_ax.yaxis, surface_ax.zaxis):
+                axis.set_pane_color((0.975, 0.975, 0.975, 1.0))
+                axis._axinfo["grid"].update(
+                    {
+                        "linewidth": 0.35,
+                        "color": (0.86, 0.86, 0.86, 1.0),
+                        "linestyle": "-",
+                    }
+                )
+            surface_ax.tick_params(labelsize=7, colors=palette.SPINE_GRAY)
             surface_ax.set_title(self.t("plot_surface", h=threshold))
 
-            geometry_ax = self.figure.add_subplot(223)
+            # ---- Ripley's K with the complete-spatial-randomness band -------
+            k_ax = self.figure.add_subplot(grid[0, 2])
+            if len(self.model.points) >= 4:
+                span = float(np.max(self.model.points) - np.min(self.model.points))
+                radii = np.linspace(0.02 * span, 0.50 * span, 40)
+                observed, mean, low, high = ripley_envelope(self.model.points, radii)
+                k_ax.fill_between(
+                    radii,
+                    low,
+                    high,
+                    color=palette.GRID_GRAY,
+                    alpha=0.45,
+                    linewidth=0,
+                    label="95% CSR",
+                )
+                k_ax.plot(
+                    radii,
+                    mean,
+                    color=palette.SPINE_GRAY,
+                    linewidth=0.9,
+                    linestyle="--",
+                    label="CSR mean",
+                )
+                k_ax.plot(
+                    radii,
+                    observed,
+                    color=palette.GEOMETRY_A_COLOR,
+                    linewidth=1.9,
+                    label="K(r)",
+                )
+                k_ax.legend(frameon=False, fontsize=7, loc="upper left")
+            else:
+                k_ax.text(
+                    0.5,
+                    0.5,
+                    "no point pattern",
+                    ha="center",
+                    va="center",
+                    fontsize=8,
+                    color=palette.SPINE_GRAY,
+                    transform=k_ax.transAxes,
+                )
+            k_ax.set_title(self.t("plot_ripley"))
+            k_ax.set_xlabel("r")
+            k_ax.set_ylabel("K(r)")
+            self._style(k_ax)
+
+            # ---- geometric responses ---------------------------------------
+            geometry_ax = self.figure.add_subplot(grid[1, 0])
             geometry_ax.plot(
                 self.result.thresholds,
                 self.result.area,
-                color=palette.SURFACE_RAMP[0],
+                color=palette.GEOMETRY_A_COLOR,
                 marker="o",
                 markersize=3.5,
                 markerfacecolor="white",
                 markeredgewidth=0.6,
                 markevery=8,
-                linewidth=1.8,
+                linewidth=1.9,
                 label="A(h)",
             )
             geometry_ax.plot(
                 self.result.thresholds,
                 self.result.excess_volume,
-                color=palette.SURFACE_RAMP[-1],
+                color=palette.GEOMETRY_V_COLOR,
                 marker="s",
                 markersize=3.3,
                 markerfacecolor="white",
                 markeredgewidth=0.6,
                 markevery=8,
-                linewidth=1.8,
+                linewidth=1.9,
                 label="V(h)",
             )
             geometry_ax.axvline(
@@ -591,30 +697,31 @@ def run_gui() -> None:
             geometry_ax.set_ylim(0, 1.02)
             geometry_ax.set_title(self.t("plot_geometry"))
             geometry_ax.set_xlabel(self.t("axis_threshold"))
-            geometry_ax.legend(frameon=False)
+            geometry_ax.legend(frameon=False, fontsize=8)
             self._style(geometry_ax)
 
-            topology_ax = self.figure.add_subplot(224)
+            # ---- topological responses --------------------------------------
+            topology_ax = self.figure.add_subplot(grid[1, 1])
             raw_n = np.asarray(self.result.component_count, dtype=float)
             raw_l = np.asarray(self.result.largest_component_ratio, dtype=float)
             topology_ax.plot(
                 self.result.thresholds,
                 raw_n,
                 color=palette.GRID_GRAY,
-                linewidth=0.9,
-                alpha=0.75,
+                linewidth=0.8,
+                alpha=0.7,
                 zorder=1,
             )
-            topology_ax.plot(
+            (curve_n,) = topology_ax.plot(
                 self.result.thresholds,
                 smooth_for_display(raw_n),
-                color=palette.CITY_COLORS[0],
+                color=palette.GEOMETRY_A_COLOR,
                 linewidth=2.0,
                 label="N(h)",
                 zorder=2,
             )
-            topology_ax.set_ylabel("N(h)", color=palette.CITY_COLORS[0])
-            topology_ax.tick_params(axis="y", labelcolor=palette.CITY_COLORS[0])
+            topology_ax.set_ylabel("N(h)", color=palette.GEOMETRY_A_COLOR)
+            topology_ax.tick_params(axis="y", labelcolor=palette.GEOMETRY_A_COLOR)
             topology_ax.axvline(
                 threshold, color=palette.SPINE_GRAY, linestyle="--", linewidth=0.9
             )
@@ -623,24 +730,44 @@ def run_gui() -> None:
                 self.result.thresholds,
                 raw_l,
                 color=palette.GRID_GRAY,
-                linewidth=0.9,
-                alpha=0.75,
+                linewidth=0.8,
+                alpha=0.7,
                 zorder=1,
             )
-            dominance_ax.plot(
+            (curve_l,) = dominance_ax.plot(
                 self.result.thresholds,
                 smooth_for_display(raw_l),
-                color=palette.CITY_COLORS[1],
+                color=palette.GEOMETRY_V_COLOR,
                 linewidth=2.0,
                 label="L(h)",
                 zorder=2,
             )
             dominance_ax.set_ylim(0, 1.02)
-            dominance_ax.set_ylabel("L(h)", color=palette.CITY_COLORS[1])
-            dominance_ax.tick_params(axis="y", labelcolor=palette.CITY_COLORS[1])
+            dominance_ax.set_ylabel("L(h)", color=palette.GEOMETRY_V_COLOR)
+            dominance_ax.tick_params(axis="y", labelcolor=palette.GEOMETRY_V_COLOR)
             topology_ax.set_title(self.t("plot_topology"))
             topology_ax.set_xlabel(self.t("axis_threshold"))
+            topology_ax.legend(
+                handles=[curve_n, curve_l], frameon=False, fontsize=8, loc="upper right"
+            )
             self._style(topology_ax)
+
+            # ---- coordinate histograms --------------------------------------
+            hist_grid = grid[1, 2].subgridspec(2, 1, hspace=0.55)
+            x_ax = self.figure.add_subplot(hist_grid[0])
+            y_ax = self.figure.add_subplot(hist_grid[1])
+            if len(self.model.points):
+                first, second = self.model.points[:, 0], self.model.points[:, 1]
+            else:
+                first = second = self.model.grid_z.ravel()
+            x_ax.hist(first, bins=18, color=palette.POINT_COLOR, alpha=0.85)
+            x_ax.set_ylabel("freq x", fontsize=7)
+            y_ax.hist(second, bins=18, color=palette.CENTER_COLOR, alpha=0.85)
+            y_ax.set_ylabel("freq y", fontsize=7)
+            for axis in (x_ax, y_ax):
+                axis.tick_params(labelsize=7)
+                self._style(axis)
+            x_ax.set_title(self.t("plot_histograms"), fontsize=9)
 
             self.canvas.draw_idle()
 

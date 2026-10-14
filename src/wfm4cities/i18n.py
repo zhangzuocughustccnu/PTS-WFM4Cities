@@ -47,6 +47,14 @@ STRINGS: dict[str, dict[str, str]] = {
     "plot_imported": {"en": "Imported surface", "zh": "导入表面"},
     "plot_surface": {"en": "3-D surface, h={h:.2f}", "zh": "三维表面, h={h:.2f}"},
     "plot_geometry": {"en": "Geometric responses", "zh": "几何响应"},
+    "plot_ripley": {
+        "en": "Ripley's K(r) and the CSR band",
+        "zh": "Ripley K(r) 与 CSR 置信带",
+    },
+    "plot_histograms": {
+        "en": "Coordinate histograms",
+        "zh": "坐标直方图",
+    },
     "plot_topology": {"en": "Topological responses", "zh": "拓扑响应"},
     "axis_threshold": {"en": "Threshold h", "zh": "阈值 h"},
     "status_ready": {"en": "Ready", "zh": "就绪"},

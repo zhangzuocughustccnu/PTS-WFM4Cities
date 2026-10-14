@@ -36,11 +36,18 @@ DOMAIN_FILL = "#F5EFE6"
 #: Grey panel background used when panels are assembled into a composite figure.
 FIGURE_PANEL = "#D9D9D9"
 
-#: Primary colour of the point pattern (the orange of the ramp).
-POINT_COLOR = "#F29E2D"
+#: Primary colour of the point pattern: the deep red of the shaded surface, so
+#: the points read dark against the light domain.
+POINT_COLOR = "#5E140B"
 
-#: Colour of the cluster centres.
-CENTER_COLOR = "#C14220"
+#: Colour of the cluster centres: the orange of the ramp, which keeps them
+#: visible against the deep-red observations.
+CENTER_COLOR = "#F29E2D"
+
+#: Geometric responses: blue-black for the projected-area fraction and dark
+#: orange for the normalised exceedance volume.
+GEOMETRY_A_COLOR = "#16263D"
+GEOMETRY_V_COLOR = "#C1440E"
 
 #: Pale cyan of the water surface in the three-dimensional views, as in the
 #: city figure of the accompanying study.

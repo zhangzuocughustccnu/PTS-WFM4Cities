@@ -3,6 +3,22 @@
 All notable changes follow the principles of
 [Keep a Changelog](https://keepachangelog.com/) and semantic versioning.
 
+## [3.1.3] - 2026-10-14
+
+### Changed
+
+- the point pattern is drawn in the deep red of the shaded surface and the
+  cluster centres in the orange of the ramp;
+- the geometric responses use blue-black for A(h) and dark orange for V(h);
+- the topological panel carries a legend for N(h) and L(h);
+- the three-dimensional panel is wider, its panes are lighter and its grid is
+  finer, thinner and paler.
+
+### Added
+
+- a Ripley's K(r) panel with a 95% complete-spatial-randomness band, and a
+  coordinate-histogram panel, restoring the statistics of the 2.6 console.
+
 ## [3.1.2] - 2026-10-14
 
 ### Changed
