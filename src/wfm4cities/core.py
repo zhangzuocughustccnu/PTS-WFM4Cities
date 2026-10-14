@@ -345,3 +345,178 @@ def ripley_k(
     n = len(coordinates)
     counts = np.asarray([(distances <= radius).sum() for radius in r], dtype=float)
     return np.asarray(float(area) * counts / (n * (n - 1)), dtype=float)
+
+
+# ---------------------------------------------------------------------------
+# The four canonical structures (M1--M4)
+# ---------------------------------------------------------------------------
+
+#: Labels of the four canonical structures of the accompanying study.  The
+#: two dimensions are monocentric versus polycentric and concentrated versus
+#: dispersed (following Meijers and Burger, 2010).
+MODEL_LABELS: dict[str, str] = {
+    "M1": "M1 monocentric-concentrated",
+    "M2": "M2 polycentric-concentrated",
+    "M3": "M3 monocentric-dispersed",
+    "M4": "M4 polycentric-dispersed",
+}
+
+#: Preset parameters reproducing the characteristic point pattern of each
+#: canonical structure.  One cluster means monocentric and several clusters
+#: mean polycentric; a small ``cluster_std`` means concentrated and a large one
+#: means dispersed.  The values are the stochastic counterparts of the
+#: deterministic benchmark surfaces used to evaluate PTS.
+MODEL_PRESETS: dict[str, dict[str, float]] = {
+    "M1": {
+        "num_points": 150,
+        "num_clusters": 1,
+        "cluster_std": 0.55,
+        "noise_ratio": 0.15,
+        "min_distance": 0.0,
+        "seed": 42,
+    },
+    "M2": {
+        "num_points": 200,
+        "num_clusters": 4,
+        "cluster_std": 0.50,
+        "noise_ratio": 0.15,
+        "min_distance": 4.0,
+        "seed": 42,
+    },
+    "M3": {
+        "num_points": 300,
+        "num_clusters": 1,
+        "cluster_std": 3.20,
+        "noise_ratio": 0.40,
+        "min_distance": 0.0,
+        "seed": 42,
+    },
+    "M4": {
+        "num_points": 350,
+        "num_clusters": 5,
+        "cluster_std": 2.60,
+        "noise_ratio": 0.40,
+        "min_distance": 4.0,
+        "seed": 42,
+    },
+}
+
+
+def model_config(model: str, **overrides: float) -> SimulationConfig:
+    """Return the :class:`SimulationConfig` of a canonical structure.
+
+    ``model`` is one of ``M1``--``M4``.  Any preset value may be overridden
+    through keyword arguments, which is what the four buttons of the desktop
+    interface use.
+    """
+
+    key = str(model).strip().upper()
+    if key not in MODEL_PRESETS:
+        raise ValueError(
+            f"unknown model {model!r}; expected one of {sorted(MODEL_PRESETS)}"
+        )
+    settings: dict[str, float] = dict(MODEL_PRESETS[key])
+    settings.update(overrides)
+    settings["num_points"] = int(settings["num_points"])
+    settings["num_clusters"] = int(settings["num_clusters"])
+    settings["seed"] = int(settings["seed"])
+    return SimulationConfig(**settings)
+
+
+def build_model_surface(model: str, **overrides: float) -> SurfaceModel:
+    """Generate the point pattern and surface of a canonical structure."""
+
+    return build_surface(model_config(model, **overrides))
+
+
+@dataclass(frozen=True)
+class StandardizationReport:
+    """Record of the affine standardisation applied to imported observations."""
+
+    source_extent: tuple[float, float, float, float]
+    target_extent: tuple[float, float, float, float]
+    scale_x: float
+    scale_y: float
+    value_range: tuple[float, float]
+    preserve_aspect: bool
+
+
+def standardize_points(
+    points: ArrayLike,
+    values: ArrayLike,
+    *,
+    domain_max: float = 100.0,
+    preserve_aspect: bool = False,
+) -> tuple[FloatArray, FloatArray, StandardizationReport]:
+    """Map imported observations onto the standard square domain.
+
+    The external margin is removed and the observed extent is affinely mapped
+    onto ``[0, domain_max]`` on both axes, mirroring the night-time-light
+    preparation of the accompanying study: after standardisation, data sets of
+    different extent, shape, and units are computationally comparable.  The
+    attribute values are min--max normalised to ``[0, 1]`` so that the threshold
+    scan and the response measurements are unaffected by the original units.
+
+    The aspect ratio is not preserved unless ``preserve_aspect`` is set, and
+    the applied scales are always reported in the returned
+    :class:`StandardizationReport`.
+    """
+
+    coordinates = np.asarray(points, dtype=float)
+    observed = np.asarray(values, dtype=float)
+    if coordinates.ndim != 2 or coordinates.shape[1] != 2:
+        raise ValueError("points must have shape (n, 2)")
+    if observed.shape != (coordinates.shape[0],):
+        raise ValueError("values must contain one number per point")
+    if not np.isfinite(coordinates).all() or not np.isfinite(observed).all():
+        raise ValueError("points and values must be finite")
+    if coordinates.shape[0] < 4:
+        raise ValueError("at least four observations are required to build a surface")
+    if domain_max <= 0.0:
+        raise ValueError("domain_max must be positive")
+
+    x_min, y_min = coordinates.min(axis=0)
+    x_max, y_max = coordinates.max(axis=0)
+    width = float(x_max - x_min)
+    height = float(y_max - y_min)
+    if width <= 0.0 or height <= 0.0:
+        raise ValueError("the observations must span a non-degenerate extent")
+
+    if preserve_aspect:
+        scale = domain_max / max(width, height)
+        scale_x = scale_y = float(scale)
+        offset_x = 0.5 * (domain_max - width * scale)
+        offset_y = 0.5 * (domain_max - height * scale)
+    else:
+        scale_x = float(domain_max / width)
+        scale_y = float(domain_max / height)
+        offset_x = offset_y = 0.0
+
+    standardized = np.column_stack(
+        (
+            (coordinates[:, 0] - x_min) * scale_x + offset_x,
+            (coordinates[:, 1] - y_min) * scale_y + offset_y,
+        )
+    )
+
+    value_min = float(observed.min())
+    value_max = float(observed.max())
+    if value_max <= value_min:
+        raise ValueError(
+            "the selected attribute is constant and carries no vertical structure"
+        )
+    normalized = (observed - value_min) / (value_max - value_min)
+
+    report = StandardizationReport(
+        source_extent=(float(x_min), float(x_max), float(y_min), float(y_max)),
+        target_extent=(0.0, float(domain_max), 0.0, float(domain_max)),
+        scale_x=scale_x,
+        scale_y=scale_y,
+        value_range=(value_min, value_max),
+        preserve_aspect=bool(preserve_aspect),
+    )
+    return (
+        np.asarray(standardized, dtype=float),
+        np.asarray(normalized, dtype=float),
+        report,
+    )

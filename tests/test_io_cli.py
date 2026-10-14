@@ -3,6 +3,7 @@ import json
 import sys
 from pathlib import Path
 
+import wfm4cities
 from wfm4cities.cli import main
 from wfm4cities.io import read_point_csv, read_surface_csv
 
@@ -46,7 +47,7 @@ def test_cli_demo_writes_expected_headless_outputs(tmp_path: Path) -> None:
     grid = read_surface_csv(output / "surface_normalized.csv")
     assert grid.shape == (24, 24)
     payload = json.loads((output / "pts_features.json").read_text(encoding="utf-8"))
-    assert payload["WFM4Cities_version"] == "3.0.0"
+    assert payload["WFM4Cities_version"] == wfm4cities.__version__
 
     with (output / "pts_response.csv").open(encoding="utf-8") as handle:
         rows = list(csv.DictReader(handle))
@@ -57,7 +58,7 @@ def test_cli_demo_writes_expected_headless_outputs(tmp_path: Path) -> None:
 def test_legacy_namespace_import() -> None:
     import WFM4Cities
 
-    assert WFM4Cities.__version__ == "3.0.0"
+    assert WFM4Cities.__version__ == wfm4cities.__version__
 
 
 def test_short_scan_domain_writes_valid_feature_note(tmp_path: Path) -> None:

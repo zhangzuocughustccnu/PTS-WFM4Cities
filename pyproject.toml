@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "PTS-WFM4Cities"
 dynamic = ["version"]
-description = "DEM-inspired urban scalar surfaces and progressive threshold scanning"
+description = "PTS-WFM4Cities: progressive threshold scanning (PTS) on DEM-inspired urban scalar surfaces"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
