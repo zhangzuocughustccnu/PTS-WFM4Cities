@@ -155,6 +155,69 @@ WFM4Cities calculates a local neighbor count.
 The main response arrays are available as `result.A`, `result.V`,
 `result.N`, and `result.L`.
 
+
+## Canonical structures (M1--M4)
+
+The four canonical structures of the accompanying study are available as
+one-click presets.  One cluster means monocentric and several clusters mean
+polycentric; a small cluster standard deviation means concentrated and a large
+one means dispersed.
+
+| Preset | Structure |
+| --- | --- |
+| `M1` | monocentric-concentrated |
+| `M2` | polycentric-concentrated |
+| `M3` | monocentric-dispersed |
+| `M4` | polycentric-dispersed |
+
+    from wfm4cities import MODEL_LABELS, build_model_surface
+
+    surface = build_model_surface("M3")      # or "M1", "M2", "M4"
+    print(MODEL_LABELS["M3"])                # M3 monocentric-dispersed
+
+The presets are the stochastic counterparts of the deterministic benchmark
+surfaces: they generate point patterns with the characteristic signature of each
+structure, not the archived benchmark grids themselves.  In the desktop
+interface they are the four buttons of the *Canonical structures* panel.
+
+## Importing your own observations
+
+Any table of two-dimensional coordinates plus one attribute can be imported.
+The external margin is removed, the extent is affinely mapped onto the standard
+square domain (0--100 by default) and the attribute is min--max normalised to
+0--1, mirroring the night-time-light preparation of the accompanying study.  The
+aspect ratio is not preserved unless `preserve_aspect=True`, and the applied
+scales are always reported.
+
+    import numpy as np
+    from wfm4cities import standardize_points
+
+    points = np.array([[0, 0], [4, 0], [4, 3], [0, 3]])
+    values = np.array([1.0, 2.0, 3.0, 4.0])
+    mapped, normalised, report = standardize_points(points, values)
+    print(report.scale_x, report.scale_y)
+
+In the desktop interface choose *Import points* and pick the x, y and attribute
+columns; the status bar reports the mapping that was applied.
+
+## Interface language
+
+The desktop interface starts in English and the *Language* button switches it to
+Chinese; every label, panel title and status message follows.  The strings live
+in `wfm4cities.i18n`, so a further language is a table away.
+
+## Fonts and colour scheme
+
+`wfm4cities.fonts` selects Times New Roman for Latin text and SimSun/STSong for
+Chinese, using the copies already installed on the system, and registers extra
+font files from the folder named by `PTS_FONT_DIR`.  No proprietary font file is
+redistributed with the package.
+
+Every colour lives in `wfm4cities.palette`, so the interface, the command line
+and the exported figures always agree.
+
+    from wfm4cities.palette import SURFACE_RAMP, surface_cmap
+
 ## Threshold conventions
 
 Two explicit rules are available:

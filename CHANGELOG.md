@@ -3,6 +3,43 @@
 All notable changes follow the principles of
 [Keep a Changelog](https://keepachangelog.com/) and semantic versioning.
 
+## [3.1.1] - 2026-10-14
+
+### Fixed
+
+- documented the 3.1 features on the project page; 3.1.0 shipped the code but
+  the long description was published before the sections below were written.
+
+## [3.1.0] - 2026-10-14
+
+### Added
+
+- the four canonical structures of the accompanying study as one-click presets:
+  `MODEL_PRESETS`, `MODEL_LABELS`, `model_config()` and `build_model_surface()`
+  cover monocentric-concentrated (M1), polycentric-concentrated (M2),
+  monocentric-dispersed (M3) and polycentric-dispersed (M4);
+- `standardize_points()`, which removes the external margin of imported
+  observations and affinely maps their extent onto the standard square domain
+  while min--max normalising the selected attribute, plus a
+  `StandardizationReport` recording the applied scales;
+- `io.list_csv_columns()` and `io.read_point_table()` for importing arbitrary
+  point tables with caller-chosen x, y and attribute columns;
+- `wfm4cities.palette`, the single source of truth for the figure colours;
+- `wfm4cities.i18n` and a *Language* button: the interface defaults to English
+  and switches to Chinese, labels, panel titles and status messages included;
+- `wfm4cities.fonts`: Times New Roman for Latin and SimSun/STSong for Chinese,
+  taken from the system (no proprietary font file is redistributed) with
+  `PTS_FONT_DIR` as an override for machines that lack them.
+
+### Changed
+
+- the desktop interface and the figure code read every colour from
+  `wfm4cities.palette` instead of hard-coded values;
+- the colour scheme follows the four-model figure of the accompanying study;
+- the three-dimensional panel is hill-shaded so the relief is visible;
+- the topological curves are drawn with a display-only moving average that
+  keeps both anchors; exported values are never smoothed.
+
 ## [3.0.0] - 2026-08-08
 
 ### Added
