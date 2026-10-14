@@ -1,10 +1,10 @@
 """Colour scheme for PTS-WFM4Cities 3.1.
 
-The surface ramp is the black-to-yellow ramp of the accompanying study's
-city figure and its supplementary city map, so that the package, the desktop
-interface and every exported figure use one palette:
+The surface ramp runs from deep blue for the lowest value to deep red for the
+highest, inheriting the colour bar of the four-model figure of the accompanying
+study:
 
-    low  #000000 -> #5E140B -> #C14220 -> #F29E2D -> #F8DD34  high
+    low  #1B3A78 -> #4A8FC0 -> #7FC4A0 -> #F0C948 -> #B0291C  high
 
 The categorical colours used for up to four series are the ones already used by
 the city figure of that study, so a figure drawn here drops straight into the
@@ -21,28 +21,27 @@ from matplotlib.colors import LinearSegmentedColormap
 #: Surface-height ramp, ordered from the lowest to the highest value.  The five
 #: anchors are exactly the ones used by the accompanying study.
 SURFACE_RAMP: tuple[str, ...] = (
-    "#000000",
-    "#5E140B",
-    "#C14220",
-    "#F29E2D",
-    "#F8DD34",
+    "#1B3A78",
+    "#4A8FC0",
+    "#7FC4A0",
+    "#F0C948",
+    "#B0291C",
 )
 
-#: Fill of the two-dimensional domain in the point-pattern panel: a light warm
-#: tone that keeps the observations legible against the black low end of the
-#: ramp.
-DOMAIN_FILL = "#F5EFE6"
+#: Fill of the two-dimensional domain in the point-pattern panel: the light blue
+#: of the four-model figure of the accompanying study.
+DOMAIN_FILL = "#AACCEE"
 
 #: Grey panel background used when panels are assembled into a composite figure.
 FIGURE_PANEL = "#D9D9D9"
 
-#: Primary colour of the point pattern: the deep red of the shaded surface, so
-#: the points read dark against the light domain.
-POINT_COLOR = "#5E140B"
+#: Primary colour of the point pattern: the orange sampled from the four-model
+#: figure of the accompanying study, drawn on its light-blue domain.
+POINT_COLOR = "#F08830"
 
-#: Colour of the cluster centres: the orange of the ramp, which keeps them
-#: visible against the deep-red observations.
-CENTER_COLOR = "#F29E2D"
+#: Colour of the cluster centres: a deeper orange, so the centre still stands
+#: out among the observations of the same hue.
+CENTER_COLOR = "#D9721C"
 
 #: Geometric responses: blue-black for the projected-area fraction and dark
 #: orange for the normalised exceedance volume.
@@ -51,7 +50,7 @@ GEOMETRY_V_COLOR = "#C1440E"
 
 #: Pale cyan of the water surface in the three-dimensional views, as in the
 #: city figure of the accompanying study.
-WATER_COLOR = "#BFE3F0"
+WATER_COLOR = "#CBE3F2"
 
 #: Face colour of the result panels and of the drawing area.
 PANEL_FACE = "#F7F7F7"

@@ -3,6 +3,21 @@
 All notable changes follow the principles of
 [Keep a Changelog](https://keepachangelog.com/) and semantic versioning.
 
+## [3.1.6] - 2026-10-14
+
+### Changed
+
+- the point-pattern panel returns to the light-blue domain and orange
+  observations sampled from the four-model figure of the accompanying study;
+- the surface ramp runs from deep blue (low) to deep red (high), inheriting the
+  colour bar of that figure; the water surface is the pale blue of its
+  containers.
+
+### Fixed
+
+- the hierarchical two-by-four layout and the fixed three-dimensional box aspect
+  announced for 3.1.5, which was prepared but never published.
+
 ## [3.1.5] - 2026-10-14
 
 ### Fixed
