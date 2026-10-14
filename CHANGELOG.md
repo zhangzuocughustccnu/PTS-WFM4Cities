@@ -3,6 +3,15 @@
 All notable changes follow the principles of
 [Keep a Changelog](https://keepachangelog.com/) and semantic versioning.
 
+## [3.1.4] - 2026-10-14
+
+### Changed
+
+- compact figure layout: tighter panel padding, a wider three-dimensional
+  panel zoomed to fill its cell, and the histogram pair brought together;
+- one typography block in `fonts.apply()` gives the figures and the interface
+  consistent compact sizes for titles, labels, ticks and legends.
+
 ## [3.1.3] - 2026-10-14
 
 ### Changed

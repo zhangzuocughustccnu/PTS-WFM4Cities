@@ -318,7 +318,15 @@ def run_gui() -> None:
 
             figure_frame = ttk_module.Frame(container)
             figure_frame.grid(row=0, column=1, sticky="nsew")
-            self.figure = figure_class(figsize=(11.6, 7.9), constrained_layout=True)
+            self.figure = figure_class(
+                figsize=(11.6, 7.9),
+                constrained_layout={
+                    "w_pad": 0.40,
+                    "h_pad": 0.30,
+                    "wspace": 0.05,
+                    "hspace": 0.06,
+                },
+            )
             self.canvas = canvas_class(self.figure, master=figure_frame)
             self.canvas.get_tk_widget().pack(fill="both", expand=True)
 
@@ -521,7 +529,7 @@ def run_gui() -> None:
             threshold = float(self.variables["threshold"].get())
             self.figure.clear()
             grid = self.figure.add_gridspec(
-                2, 3, width_ratios=(1.0, 1.25, 1.0), height_ratios=(1.18, 1.0)
+                2, 3, width_ratios=(1.0, 1.28, 1.0), height_ratios=(1.15, 1.0)
             )
 
             # ---- point pattern (or the imported surface) --------------------
@@ -601,6 +609,7 @@ def run_gui() -> None:
             )
             surface_ax.set_zlim(0, 1)
             surface_ax.view_init(elev=34, azim=-60)
+            surface_ax.set_box_aspect(None, zoom=1.18)
             x0, x1 = float(self.model.grid_x.min()), float(self.model.grid_x.max())
             y0, y1 = float(self.model.grid_y.min()), float(self.model.grid_y.max())
             surface_ax.set_xticks(np.linspace(x0, x1, 11))
@@ -753,7 +762,7 @@ def run_gui() -> None:
             self._style(topology_ax)
 
             # ---- coordinate histograms --------------------------------------
-            hist_grid = grid[1, 2].subgridspec(2, 1, hspace=0.55)
+            hist_grid = grid[1, 2].subgridspec(2, 1, hspace=0.14)
             x_ax = self.figure.add_subplot(hist_grid[0])
             y_ax = self.figure.add_subplot(hist_grid[1])
             if len(self.model.points):

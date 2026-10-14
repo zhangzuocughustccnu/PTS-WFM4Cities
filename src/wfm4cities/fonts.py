@@ -86,6 +86,13 @@ def apply(directory: str | os.PathLike[str] | None = None) -> list[str]:
     rcParams["font.family"] = families
     rcParams["font.serif"] = families
     rcParams["axes.unicode_minus"] = False
+    # Compact publication typography: the panels of the desktop interface and of
+    # the exported figures are dense, so the defaults are tightened here once.
+    rcParams["axes.titlesize"] = 10.0
+    rcParams["axes.labelsize"] = 8.5
+    rcParams["xtick.labelsize"] = 7.5
+    rcParams["ytick.labelsize"] = 7.5
+    rcParams["legend.fontsize"] = 7.5
     if extra:
         families = [*families, "registered: " + ", ".join(extra)]
     return families
