@@ -81,3 +81,24 @@ def series_marker(index: int) -> str:
     """Return the marker for ``index``, cycling if necessary."""
 
     return CITY_MARKERS[index % len(CITY_MARKERS)]
+
+
+#: Ramp used to fill the vertical sections, sampled from the colour strip
+#: supplied by the author: orange-red at the top down to light blue at the
+#: bottom, i.e. the same high-to-low reading as the three-dimensional surface.
+SECTION_RAMP: tuple[str, ...] = (
+    "#88B8C4",
+    "#8DBAC5",
+    "#8FBEC3",
+    "#A2CCC0",
+    "#BACCA4",
+    "#D2CC83",
+    "#CFAF70",
+    "#C48160",
+)
+
+
+def section_cmap(name: str = "pts_section") -> LinearSegmentedColormap:
+    """Return the colour map of the section fills (low to high)."""
+
+    return LinearSegmentedColormap.from_list(name, list(SECTION_RAMP), N=256)

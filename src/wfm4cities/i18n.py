@@ -53,16 +53,16 @@ STRINGS: dict[str, dict[str, str]] = {
     "plot_section_x": {"en": "Section at x", "zh": "x 处剖面"},
     "plot_section_y": {"en": "Section at y", "zh": "y 处剖面"},
     "plot_ripley": {
-        "en": "Connected components N(h), M1-M4",
-        "zh": "连通组件数 N(h), M1-M4",
+        "en": "Connected components N(h) - {name}",
+        "zh": "连通组件数 N(h) - {name}",
     },
     "plot_histograms": {
         "en": "Coordinate histograms",
         "zh": "坐标直方图",
     },
     "plot_topology": {
-        "en": "Largest-component share L(h), M1-M4",
-        "zh": "最大组件占比 L(h), M1-M4",
+        "en": "Largest-component share L(h) - {name}",
+        "zh": "最大组件占比 L(h) - {name}",
     },
     "axis_threshold": {"en": "Threshold h", "zh": "阈值 h"},
     "status_ready": {"en": "Ready", "zh": "就绪"},

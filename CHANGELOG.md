@@ -3,6 +3,18 @@
 All notable changes follow the principles of
 [Keep a Changelog](https://keepachangelog.com/) and semantic versioning.
 
+## [3.1.17] - 2026-10-15
+
+### Changed
+
+- layout after the author's review of the interface: the geometric and the
+  component-share columns are 20% narrower, the two vertical sections are 30%
+  taller and their top and bottom edges align with the panels beside them;
+- the N(h) and L(h) panels follow the selected structure only (clicking M1 shows
+  M1, clicking M2 shows M2), so they stay consistent with the three-dimensional
+  panel instead of comparing all four structures at once;
+- the section fills use the ramp supplied by the author, orange at the top down
+  to light blue at the bottom.
 ## [3.1.16] - 2026-10-15
 
 ### Fixed

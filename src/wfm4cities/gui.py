@@ -144,6 +144,7 @@ def run_gui() -> None:
             self._curves: tuple | None = None
             self._curves_key: tuple | None = None
             self._curves_pending = False
+            self.selected_structure = "M1"
 
             self.variables = {
                 "num_points": tk.IntVar(value=150),
@@ -381,6 +382,7 @@ def run_gui() -> None:
             """Return the cached four-structure curves, or ``None`` when absent."""
 
             key_now = (
+                self.selected_structure,
                 int(self.variables["grid_size"].get()),
                 str(self.variables["rule"].get()),
             )
@@ -410,7 +412,7 @@ def run_gui() -> None:
                 rule = str(self.variables["rule"].get())
                 thresholds = np.linspace(0.0, 0.90, 41)
                 curves: dict[str, dict[str, tuple]] = {"N": {}, "L": {}}
-                for name in STRUCTURE_KEYS:
+                for name in (self.selected_structure,):
                     counts: list = []
                     shares: list = []
                     for repeat in range(5):
@@ -434,7 +436,11 @@ def run_gui() -> None:
                         )
                     self.root.update_idletasks()
                 self._curves = (thresholds, curves)
-                self._curves_key = (int(self.variables["grid_size"].get()), rule)
+                self._curves_key = (
+                    self.selected_structure,
+                    int(self.variables["grid_size"].get()),
+                    rule,
+                )
                 self.draw()
             except Exception as exc:  # pragma: no cover - defensive
                 self._messagebox.showerror(self.t("window_title"), str(exc))
@@ -451,6 +457,7 @@ def run_gui() -> None:
             self.variables["cluster_std"].set(float(settings.cluster_std))
             self.variables["min_distance"].set(float(settings.min_distance))
             self.imported_points = None
+            self.selected_structure = key
             self._curves = None
             self.generate()
             self.set_status("status_preset", label=MODEL_LABELS[key])
@@ -644,7 +651,7 @@ def run_gui() -> None:
             grid = self.figure.add_gridspec(
                 2,
                 3,
-                width_ratios=(1.0, 1.5, 1.0),
+                width_ratios=(1.0, 1.2, 0.8),
                 height_ratios=(1.0, 1.0),
                 wspace=0.02,
                 hspace=0.03,
@@ -786,28 +793,26 @@ def run_gui() -> None:
             else:
                 thresholds, curves = cached
             count_ax = self.figure.add_subplot(grid[0, 2])
-            for index, name in enumerate(STRUCTURE_KEYS):
+            for index, name in enumerate((self.selected_structure,)):
                 if name not in curves["N"]:
                     continue
                 mean, low, high = curves["N"][name]
                 colour = palette.series_color(index)
                 count_ax.fill_between(
-                    thresholds, low, high, color=colour, alpha=0.15, linewidth=0
+                    thresholds, low, high, color=colour, alpha=0.18, linewidth=0
                 )
                 count_ax.plot(
                     thresholds,
                     mean,
                     color=colour,
-                    linewidth=1.5,
+                    linewidth=1.6,
                     marker=palette.series_marker(index),
                     markersize=2.6,
                     markevery=4,
-                    label=name,
                 )
-            count_ax.set_title(self.t("plot_ripley"))
+            count_ax.set_title(self.t("plot_ripley", name=self.selected_structure))
             count_ax.set_xlabel(self.t("axis_threshold"))
             count_ax.set_ylabel("N(h)")
-            count_ax.legend(frameon=False, fontsize=6.5, ncols=2)
             self._style(count_ax)
 
             # ---- geometric responses ---------------------------------------
@@ -847,35 +852,33 @@ def run_gui() -> None:
 
             # ---- L(h) of the four structures (Figure 3c2) ------------------
             share_ax = self.figure.add_subplot(grid[1, 2])
-            for index, name in enumerate(STRUCTURE_KEYS):
+            for index, name in enumerate((self.selected_structure,)):
                 if name not in curves["L"]:
                     continue
                 mean, low, high = curves["L"][name]
                 colour = palette.series_color(index)
                 share_ax.fill_between(
-                    thresholds, low, high, color=colour, alpha=0.15, linewidth=0
+                    thresholds, low, high, color=colour, alpha=0.18, linewidth=0
                 )
                 share_ax.plot(
                     thresholds,
                     mean,
                     color=colour,
-                    linewidth=1.5,
+                    linewidth=1.6,
                     marker=palette.series_marker(index),
                     markersize=2.6,
                     markevery=4,
-                    label=name,
                 )
             share_ax.set_ylim(0.0, 1.02)
-            share_ax.set_title(self.t("plot_topology"))
+            share_ax.set_title(self.t("plot_topology", name=self.selected_structure))
             share_ax.set_xlabel(self.t("axis_threshold"))
             share_ax.set_ylabel("L(h)")
-            share_ax.legend(frameon=False, fontsize=6.5, ncols=2, loc="lower right")
             self._style(share_ax)
 
             # ---- vertical sections, coloured by the height of the surface --
             from matplotlib.patches import Polygon
 
-            section_grid = grid[1, 0].subgridspec(2, 1, hspace=0.30)
+            section_grid = grid[1, 0].subgridspec(2, 1, hspace=0.02)
             axis_z = np.asarray(self.model.grid_z)
             xs = np.asarray(self.model.grid_x[0, :])
             ys = np.asarray(self.model.grid_y[:, 0])
@@ -901,7 +904,7 @@ def run_gui() -> None:
                     axis_z.shape[0] - 1,
                 )
             )
-            cmap = palette.surface_cmap()
+            cmap = palette.section_cmap()
             bottom = -0.02
 
             def draw_section(ax, horizontal, profile, title):
@@ -946,7 +949,7 @@ def run_gui() -> None:
                 )
                 ax.set_xlim(low, high)
                 ax.set_ylim(bottom, 1.02)
-                ax.set_title(title, fontsize=7)
+                ax.set_title(title, fontsize=6.5, pad=2.0)
                 ax.tick_params(labelsize=6)
                 self._style(ax)
 
