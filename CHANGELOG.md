@@ -3,6 +3,22 @@
 All notable changes follow the principles of
 [Keep a Changelog](https://keepachangelog.com/) and semantic versioning.
 
+## [3.1.21] - 2026-10-15
+
+### Changed
+
+- the status message that reports a generated structure now follows the
+  interface language as well: in Chinese it reads "已按 M2 多中心·集中 预设生成"
+  instead of mixing an English model name into a Chinese sentence, and it
+  follows the *Language* button when the interface is switched;
+- the English wording of that message is unchanged.
+
+### Added
+
+- `wfm4cities.i18n.model_label()`, the single-line bilingual name of one of the
+  four canonical structures, and the four `model_M1`--`model_M4` strings behind
+  it.
+
 ## [3.1.20] - 2026-10-15
 
 ### Changed

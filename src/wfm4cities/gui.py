@@ -136,7 +136,6 @@ def run_gui() -> None:
 
     from . import fonts, i18n, palette
     from .core import (
-        MODEL_LABELS,
         SimulationConfig,
         build_surface,
         interpolate_surface,
@@ -212,6 +211,14 @@ def run_gui() -> None:
             self.language = "zh" if self.language == "en" else "en"
             self.retranslate()
 
+        def _status_text(self, key: str, fields: dict) -> str:
+            """Format a status message, translating a named structure too."""
+
+            data = dict(fields)
+            if "structure" in data:
+                data["label"] = i18n.model_label(data.pop("structure"), self.language)
+            return self.t(key, **data)
+
         def retranslate(self) -> None:
             """Apply the current language to every widget and panel title."""
 
@@ -226,13 +233,13 @@ def run_gui() -> None:
                 else "\u8bed\u8a00: \u4e2d\u6587"
             )
             key, fields = self._status
-            self.status.set(self.t(key, **fields))
+            self.status.set(self._status_text(key, fields))
             if self.model is not None:
                 self.draw()
 
         def set_status(self, key: str, **fields: object) -> None:
-            self._status = (key, fields)
-            self.status.set(self.t(key, **fields))
+            self._status = (key, dict(fields))
+            self.status.set(self._status_text(key, self._status[1]))
 
         # ------------------------------------------------------------------
         # layout helpers
@@ -518,7 +525,7 @@ def run_gui() -> None:
             self.selected_structure = key
             self._curves = None
             self.generate()
-            self.set_status("status_preset", label=MODEL_LABELS[key])
+            self.set_status("status_preset", structure=key)
 
         def _scan(self) -> None:
             self.result = progressive_threshold_scan(

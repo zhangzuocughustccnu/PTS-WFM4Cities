@@ -30,6 +30,22 @@ def test_formatted_strings_fill_the_placeholders() -> None:
     assert "42" in text
 
 
+def test_status_bar_names_the_structure_in_both_languages() -> None:
+    """The status message follows the language, like every other label."""
+
+    for model in ("M1", "M2", "M3", "M4"):
+        assert i18n.model_label(model, "en").startswith(model)
+        assert i18n.model_label(model, "zh").startswith(model)
+        assert i18n.model_label(model, "en") != i18n.model_label(model, "zh")
+    assert i18n.model_label("M2", "zh") == "M2 多中心·集中"
+    assert i18n.model_label("M2", "en") == "M2 polycentric-concentrated"
+
+
+def test_model_label_falls_back_to_the_english_public_name() -> None:
+    assert i18n.model_label("M9", "zh") == "M9"
+    assert i18n.model_label("m3", "zh").startswith("M3")
+
+
 def test_structure_labels_are_bilingual_and_two_lines() -> None:
     for model in ("M1", "M2", "M3", "M4"):
         key = f"structure_{model}"

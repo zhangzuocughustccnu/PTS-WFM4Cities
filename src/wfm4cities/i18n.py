@@ -25,6 +25,12 @@ STRINGS: dict[str, dict[str, str]] = {
     "structure_M2": {"en": "M2\npoly·concentrated", "zh": "M2\n多中心·集中"},
     "structure_M3": {"en": "M3\nmono·dispersed", "zh": "M3\n单中心·分散"},
     "structure_M4": {"en": "M4\npoly·dispersed", "zh": "M4\n多中心·分散"},
+    #: Single-line names of the four canonical structures, used by the status
+    #: bar and by the panel titles.
+    "model_M1": {"en": "M1 monocentric-concentrated", "zh": "M1 单中心·集中"},
+    "model_M2": {"en": "M2 polycentric-concentrated", "zh": "M2 多中心·集中"},
+    "model_M3": {"en": "M3 monocentric-dispersed", "zh": "M3 单中心·分散"},
+    "model_M4": {"en": "M4 polycentric-dispersed", "zh": "M4 多中心·分散"},
     "label_points": {"en": "Points", "zh": "点数"},
     "label_noise": {"en": "Noise ratio", "zh": "噪声比"},
     "label_clusters": {"en": "Clusters", "zh": "聚类数"},
@@ -138,6 +144,21 @@ def normalise(language: str | None) -> str:
 
     code = (language or "").strip().lower()[:2]
     return code if code in LANGUAGES else DEFAULT_LANGUAGE
+
+
+def model_label(model: str, language: str = DEFAULT_LANGUAGE) -> str:
+    """Return the name of a canonical structure in ``language``.
+
+    Falls back to the English label of :data:`wfm4cities.core.MODEL_LABELS`
+    for a key that carries no translation.
+    """
+
+    label = translate(f"model_{str(model).upper()}", language)
+    if label.startswith("model_"):
+        from .core import MODEL_LABELS
+
+        return MODEL_LABELS.get(str(model).upper(), str(model))
+    return label
 
 
 def translate(key: str, language: str = DEFAULT_LANGUAGE, **fields: object) -> str:
