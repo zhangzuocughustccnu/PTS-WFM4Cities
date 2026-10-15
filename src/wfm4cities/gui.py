@@ -651,7 +651,7 @@ def run_gui() -> None:
             grid = self.figure.add_gridspec(
                 2,
                 3,
-                width_ratios=(1.0, 1.2, 0.8),
+                width_ratios=(1.0, 1.2, 1.0),
                 height_ratios=(1.0, 1.0),
                 wspace=0.02,
                 hspace=0.03,

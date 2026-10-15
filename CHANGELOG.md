@@ -3,6 +3,17 @@
 All notable changes follow the principles of
 [Keep a Changelog](https://keepachangelog.com/) and semantic versioning.
 
+## [3.1.18] - 2026-10-15
+
+### Fixed
+
+- the N(h) and L(h) panels keep their full width; only the geometric column is
+  20% narrower, as asked.
+
+### Changed
+
+- the whole figure is scaled down by about 6% through one typography block, so
+  every panel fits comfortably side by side.
 ## [3.1.17] - 2026-10-15
 
 ### Changed

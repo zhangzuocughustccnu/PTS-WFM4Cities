@@ -88,11 +88,11 @@ def apply(directory: str | os.PathLike[str] | None = None) -> list[str]:
     rcParams["axes.unicode_minus"] = False
     # Compact publication typography: the panels of the desktop interface and of
     # the exported figures are dense, so the defaults are tightened here once.
-    rcParams["axes.titlesize"] = 10.0
-    rcParams["axes.labelsize"] = 8.5
-    rcParams["xtick.labelsize"] = 7.5
-    rcParams["ytick.labelsize"] = 7.5
-    rcParams["legend.fontsize"] = 7.5
+    rcParams["axes.titlesize"] = 9.4
+    rcParams["axes.labelsize"] = 8.0
+    rcParams["xtick.labelsize"] = 7.0
+    rcParams["ytick.labelsize"] = 7.0
+    rcParams["legend.fontsize"] = 7.0
     rcParams["axes.titlepad"] = 2.5
     rcParams["axes.labelpad"] = 1.5
     if extra:
