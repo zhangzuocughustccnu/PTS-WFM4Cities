@@ -141,6 +141,8 @@ def run_gui() -> None:
             self._text_widgets: list[tuple[object, str]] = []
             self._frames: list[tuple[object, str]] = []
             self._status: tuple[str, dict] = ("status_ready", {})
+            self._curves: tuple | None = None
+            self._curves_key: tuple | None = None
 
             self.variables = {
                 "num_points": tk.IntVar(value=150),
@@ -374,6 +376,50 @@ def run_gui() -> None:
         # ------------------------------------------------------------------
         # actions
         # ------------------------------------------------------------------
+        def structure_curves(self):
+            """Mean N(h) and L(h) of the four structures with 10--90% bands.
+
+            Mirrors panel c1/c2 of Figure 3 of the accompanying study: the four
+            canonical structures are generated as their stochastic presets, each
+            repeated with different seeds, and the bands summarise the spread.
+            """
+
+            key_now = (
+                int(self.variables["grid_size"].get()),
+                str(self.variables["rule"].get()),
+            )
+            if self._curves is not None and self._curves_key == key_now:
+                return self._curves
+            self.set_status("status_structures")
+            self.root.update_idletasks()
+            thresholds = np.linspace(0.0, 0.90, 41)
+            curves: dict[str, dict[str, tuple]] = {"N": {}, "L": {}}
+            for name in STRUCTURE_KEYS:
+                counts: list = []
+                shares: list = []
+                for repeat in range(8):
+                    settings = model_config(
+                        name, seed=1000 + 37 * repeat, grid_size=key_now[0]
+                    )
+                    model = build_surface(settings)
+                    result = progressive_threshold_scan(
+                        model.grid_z, thresholds, rule=key_now[1]
+                    )
+                    counts.append(np.asarray(result.component_count, dtype=float))
+                    shares.append(
+                        np.asarray(result.largest_component_ratio, dtype=float)
+                    )
+                for label, stack in (("N", counts), ("L", shares)):
+                    values = np.asarray(stack)
+                    curves[label][name] = (
+                        values.mean(axis=0),
+                        np.percentile(values, 5, axis=0),
+                        np.percentile(values, 95, axis=0),
+                    )
+            self._curves = (thresholds, curves)
+            self._curves_key = key_now
+            return self._curves
+
         def apply_structure(self, key: str) -> None:
             """Load the preset of a canonical structure and redraw."""
 
@@ -386,6 +432,7 @@ def run_gui() -> None:
             self.variables["cluster_std"].set(float(settings.cluster_std))
             self.variables["min_distance"].set(float(settings.min_distance))
             self.imported_points = None
+            self._curves = None
             self.generate()
             self.set_status("status_preset", label=MODEL_LABELS[key])
 
@@ -419,6 +466,7 @@ def run_gui() -> None:
                 self.root.update_idletasks()
                 self.model = build_surface(settings)
                 self.imported_points = None
+                self._curves = None
                 self._scan()
                 self.draw()
                 self.set_status("status_done")
@@ -683,52 +731,30 @@ def run_gui() -> None:
             surface_ax.tick_params(labelsize=7, colors=palette.SPINE_GRAY)
             surface_ax.set_title(self.t("plot_surface", h=threshold))
 
-            # ---- Ripley's K with the complete-spatial-randomness band -------
-            k_ax = self.figure.add_subplot(grid[0, 2])
-            if len(self.model.points) >= 4:
-                span = float(np.max(self.model.points) - np.min(self.model.points))
-                radii = np.linspace(0.02 * span, 0.50 * span, 40)
-                observed, mean, low, high = ripley_envelope(self.model.points, radii)
-                k_ax.fill_between(
-                    radii,
-                    low,
-                    high,
-                    color=palette.GRID_GRAY,
-                    alpha=0.45,
-                    linewidth=0,
-                    label="95% CSR",
+            # ---- N(h) of the four structures (Figure 3c1) ------------------
+            thresholds, curves = self.structure_curves()
+            count_ax = self.figure.add_subplot(grid[0, 2])
+            for index, name in enumerate(STRUCTURE_KEYS):
+                mean, low, high = curves["N"][name]
+                colour = palette.series_color(index)
+                count_ax.fill_between(
+                    thresholds, low, high, color=colour, alpha=0.15, linewidth=0
                 )
-                k_ax.plot(
-                    radii,
+                count_ax.plot(
+                    thresholds,
                     mean,
-                    color=palette.SPINE_GRAY,
-                    linewidth=0.9,
-                    linestyle="--",
-                    label="CSR mean",
+                    color=colour,
+                    linewidth=1.5,
+                    marker=palette.series_marker(index),
+                    markersize=2.6,
+                    markevery=4,
+                    label=name,
                 )
-                k_ax.plot(
-                    radii,
-                    observed,
-                    color=palette.GEOMETRY_A_COLOR,
-                    linewidth=1.9,
-                    label="K(r)",
-                )
-                k_ax.legend(frameon=False, fontsize=7, loc="upper left")
-            else:
-                k_ax.text(
-                    0.5,
-                    0.5,
-                    "no point pattern",
-                    ha="center",
-                    va="center",
-                    fontsize=8,
-                    color=palette.SPINE_GRAY,
-                    transform=k_ax.transAxes,
-                )
-            k_ax.set_title(self.t("plot_ripley"))
-            k_ax.set_xlabel("r")
-            k_ax.set_ylabel("K(r)")
-            self._style(k_ax)
+            count_ax.set_title(self.t("plot_ripley"))
+            count_ax.set_xlabel(self.t("axis_threshold"))
+            count_ax.set_ylabel("N(h)")
+            count_ax.legend(frameon=False, fontsize=6.5, ncols=2)
+            self._style(count_ax)
 
             # ---- geometric responses ---------------------------------------
             geometry_ax = self.figure.add_subplot(grid[1, 1])
@@ -765,57 +791,30 @@ def run_gui() -> None:
             geometry_ax.legend(frameon=False, fontsize=8)
             self._style(geometry_ax)
 
-            # ---- topological responses --------------------------------------
-            topology_ax = self.figure.add_subplot(grid[1, 2])
-            raw_n = np.asarray(self.result.component_count, dtype=float)
-            raw_l = np.asarray(self.result.largest_component_ratio, dtype=float)
-            topology_ax.plot(
-                self.result.thresholds,
-                raw_n,
-                color=palette.GRID_GRAY,
-                linewidth=0.8,
-                alpha=0.7,
-                zorder=1,
-            )
-            (curve_n,) = topology_ax.plot(
-                self.result.thresholds,
-                smooth_for_display(raw_n),
-                color=palette.GEOMETRY_A_COLOR,
-                linewidth=2.0,
-                label="N(h)",
-                zorder=2,
-            )
-            topology_ax.set_ylabel("N(h)", color=palette.GEOMETRY_A_COLOR)
-            topology_ax.tick_params(axis="y", labelcolor=palette.GEOMETRY_A_COLOR)
-            topology_ax.axvline(
-                threshold, color=palette.SPINE_GRAY, linestyle="--", linewidth=0.9
-            )
-            dominance_ax = topology_ax.twinx()
-            dominance_ax.plot(
-                self.result.thresholds,
-                raw_l,
-                color=palette.GRID_GRAY,
-                linewidth=0.8,
-                alpha=0.7,
-                zorder=1,
-            )
-            (curve_l,) = dominance_ax.plot(
-                self.result.thresholds,
-                smooth_for_display(raw_l),
-                color=palette.GEOMETRY_V_COLOR,
-                linewidth=2.0,
-                label="L(h)",
-                zorder=2,
-            )
-            dominance_ax.set_ylim(0, 1.02)
-            dominance_ax.set_ylabel("L(h)", color=palette.GEOMETRY_V_COLOR)
-            dominance_ax.tick_params(axis="y", labelcolor=palette.GEOMETRY_V_COLOR)
-            topology_ax.set_title(self.t("plot_topology"))
-            topology_ax.set_xlabel(self.t("axis_threshold"))
-            topology_ax.legend(
-                handles=[curve_n, curve_l], frameon=False, fontsize=8, loc="upper right"
-            )
-            self._style(topology_ax)
+            # ---- L(h) of the four structures (Figure 3c2) ------------------
+            share_ax = self.figure.add_subplot(grid[1, 2])
+            for index, name in enumerate(STRUCTURE_KEYS):
+                mean, low, high = curves["L"][name]
+                colour = palette.series_color(index)
+                share_ax.fill_between(
+                    thresholds, low, high, color=colour, alpha=0.15, linewidth=0
+                )
+                share_ax.plot(
+                    thresholds,
+                    mean,
+                    color=colour,
+                    linewidth=1.5,
+                    marker=palette.series_marker(index),
+                    markersize=2.6,
+                    markevery=4,
+                    label=name,
+                )
+            share_ax.set_ylim(0.0, 1.02)
+            share_ax.set_title(self.t("plot_topology"))
+            share_ax.set_xlabel(self.t("axis_threshold"))
+            share_ax.set_ylabel("L(h)")
+            share_ax.legend(frameon=False, fontsize=6.5, ncols=2, loc="lower right")
+            self._style(share_ax)
 
             # ---- vertical sections, coloured by height ---------------------
             from matplotlib.collections import LineCollection

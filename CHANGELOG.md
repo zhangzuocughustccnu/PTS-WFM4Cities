@@ -3,6 +3,15 @@
 All notable changes follow the principles of
 [Keep a Changelog](https://keepachangelog.com/) and semantic versioning.
 
+## [3.1.14] - 2026-10-15
+
+### Changed
+
+- the K(r) panel and the topological panel now show panels c1 and c2 of Figure 3
+  of the accompanying study: the mean connected-component count N(h) and the
+  mean largest-component share L(h) of the four canonical structures together,
+  each with its 10--90% perturbation band, so the interface reports the
+  controlled response comparison of the paper rather than a single structure.
 ## [3.1.13] - 2026-10-15
 
 ### Changed

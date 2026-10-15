@@ -53,14 +53,17 @@ STRINGS: dict[str, dict[str, str]] = {
     "plot_section_x": {"en": "Section at x", "zh": "x 处剖面"},
     "plot_section_y": {"en": "Section at y", "zh": "y 处剖面"},
     "plot_ripley": {
-        "en": "Ripley's K(r) and the CSR band",
-        "zh": "Ripley K(r) 与 CSR 置信带",
+        "en": "Connected components N(h), M1-M4",
+        "zh": "连通组件数 N(h), M1-M4",
     },
     "plot_histograms": {
         "en": "Coordinate histograms",
         "zh": "坐标直方图",
     },
-    "plot_topology": {"en": "Topological responses", "zh": "拓扑响应"},
+    "plot_topology": {
+        "en": "Largest-component share L(h), M1-M4",
+        "zh": "最大组件占比 L(h), M1-M4",
+    },
     "axis_threshold": {"en": "Threshold h", "zh": "阈值 h"},
     "status_ready": {"en": "Ready", "zh": "就绪"},
     "status_computing": {
@@ -92,6 +95,10 @@ STRINGS: dict[str, dict[str, str]] = {
         "zh": "动画已停止",
     },
     "status_anim_done": {"en": "Animation complete", "zh": "动画完成"},
+    "status_structures": {
+        "en": "Computing the four-structure curves…",
+        "zh": "正在计算四结构曲线…",
+    },
     "status_error": {"en": "Error", "zh": "错误"},
     "status_loaded": {"en": "Loaded {path}", "zh": "已读入 {path}"},
     "status_saved": {"en": "Saved {path}", "zh": "已保存 {path}"},
