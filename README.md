@@ -10,7 +10,11 @@ DEM-inspired urban scalar surfaces and analyzing them with Progressive
 Threshold Scanning (PTS). It supports a transparent point-to-surface workflow, a headless API and
 command-line interface, and an optional bilingual desktop interface.
 
-[简体中文说明](README_zh-CN.md)
+[Chinese readme](README_zh-CN.md)
+
+The Chinese-language documents in this repository are `README_zh-CN.md`,
+`docs/GITHUB_UPLOAD_GUIDE_zh-CN.md` and `docs/REPOSITORY_AUDIT_zh-CN.md`; every
+other page, and the package itself, is written in English.
 
 The package is developed in
 [zhangzuocughustccnu/PTS-WFM4Cities](https://github.com/zhangzuocughustccnu/PTS-WFM4Cities). The original repository,

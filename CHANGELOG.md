@@ -22,10 +22,9 @@ All notable changes follow the principles of
 ### Changed
 
 - the status message that reports a generated structure now follows the
-  interface language as well: in Chinese it reads "已按 M2 多中心·集中 预设生成"
-  instead of mixing an English model name into a Chinese sentence, and it
-  follows the *Language* button when the interface is switched;
-- the English wording of that message is unchanged.
+  interface language as well, so a Chinese interface no longer mixes an
+  English model name into a Chinese sentence; the English wording of that
+  message is unchanged.
 
 ### Added
 

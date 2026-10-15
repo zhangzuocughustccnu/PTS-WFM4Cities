@@ -1,5 +1,8 @@
 # GitHub上传与3.0.0发布指南
 
+*Chinese-language working note, kept for provenance. The maintained release
+procedure is the English [release guide](RELEASE.md).*
+
 ## 1. 本次更新的性质
 
 当前GitHub仓库只有两个独立PY文件。新版不是在旁边补几个说明文件，而是

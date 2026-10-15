@@ -48,25 +48,36 @@ below mention the `WFM4Cities` project, read `PTS-WFM4Cities` for releases of
 this repository. Installing `WFM4Cities` from PyPI still resolves to the
 historical 2.6 release of that other project.
 
-## Trusted publishing
+## Trusted publishing (the preferred path)
 
-The included `.github/workflows/publish.yml` uses PyPI trusted publishing and
-does not store a long-lived API token. In PyPI:
+`.github/workflows/publish.yml` builds the distributions from the tagged commit
+and uploads them with a short-lived OIDC token, so no long-lived API token
+lives on any machine. It runs when a GitHub Release is published.
 
-1. create or select the `PTS-WFM4Cities` project;
-2. add a trusted publisher for owner `zhangzuocughustccnu`, repository
-   `PTS-WFM4Cities`, workflow `publish.yml`, environment `pypi`;
-3. in GitHub, create the protected `pypi` environment and require manual
-   approval;
-4. publish a GitHub Release tagged `v3.1.22`.
+GitHub side, already in place: the protected `pypi` environment exists and
+requires the maintainer's approval, so a release is uploaded only after that
+confirmation step.
 
-The workflow builds, checks, and uploads the distributions after the release is
-published.
+PyPI side, one-time and in the browser: project `PTS-WFM4Cities` -> *Manage* ->
+*Publishing* -> *Add a new trusted publisher*, with
 
-## Manual release (used for the 3.1 series)
+| field | value |
+|---|---|
+| Owner | `zhangzuocughustccnu` |
+| Repository name | `PTS-WFM4Cities` |
+| Workflow name | `publish.yml` |
+| Environment name | `pypi` |
 
-Trusted publishing needs a one-time configuration in PyPI. Until that is in
-place, releases are uploaded from the machine that holds the API token in
+Until that record exists, use the token path below. Once it exists, publishing
+a GitHub Release is enough: the workflow builds, checks and uploads the
+distributions. PyPI version numbers can never be reused, so a release is
+irreversible and the approval step is deliberate.
+
+## Manual release: the API-token fallback
+
+Releases of the 3.1 series were uploaded this way. It stays available when the
+trusted publisher is not configured or when GitHub Actions is unavailable.
+Run it from the machine that holds the API token in
 `~/.pypirc`, with the proxy environment cleared because the local proxy
 interrupts long uploads:
 

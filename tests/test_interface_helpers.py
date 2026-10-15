@@ -37,7 +37,7 @@ def test_status_bar_names_the_structure_in_both_languages() -> None:
         assert i18n.model_label(model, "en").startswith(model)
         assert i18n.model_label(model, "zh").startswith(model)
         assert i18n.model_label(model, "en") != i18n.model_label(model, "zh")
-    assert i18n.model_label("M2", "zh") == "M2 多中心·集中"
+    assert i18n.model_label("M2", "zh") == "M2 \u591a\u4e2d\u5fc3\u00b7\u96c6\u4e2d"
     assert i18n.model_label("M2", "en") == "M2 polycentric-concentrated"
 
 

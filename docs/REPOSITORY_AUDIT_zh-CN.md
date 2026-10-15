@@ -1,5 +1,9 @@
 # 现有仓库与2.6发布包快速审计
 
+*Chinese-language working note, kept for provenance: a dated snapshot of the
+repository as it stood before version 3.0. The maintained documentation is in
+English.*
+
 审计日期：2026-08-08。
 
 ## 已核实的现状
