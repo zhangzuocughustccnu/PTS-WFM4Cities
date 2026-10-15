@@ -1,12 +1,28 @@
 # Authors and maintainers
 
-WFM4Cities was developed by:
+## WFM4Cities -- the early single-file versions (1.0--2.6)
+
+The early single-file version of this toolkit was developed jointly by three
+people:
 
 - Zuo Zhang (张祚), Central China Normal University;
 - Yukun Jiang (江驭鲲);
 - Zhe Wang (王哲).
 
-The public contact retained from the existing PyPI release is
+## PTS-WFM4Cities -- the current package (3.0 onwards)
+
+The current package, `PTS-WFM4Cities`, is developed independently by:
+
+- Zuo Zhang (张祚), Central China Normal University.
+
+The distribution name changed with version 3.0: the package is published as
+`PTS-WFM4Cities` on PyPI, while the repository keeps its original address,
+<https://github.com/zhangzuocughustccnu/WFM4Cities>.
+
+## Contact
+
+The maintainer of `PTS-WFM4Cities` is Zuo Zhang (`zhangzuocug@163.com`). The
+public contact retained from the earlier PyPI release of `WFM4Cities` is
 `jiangyukunccnu@163.com`.
 
 Contributors should be acknowledged through the Git history and release notes.

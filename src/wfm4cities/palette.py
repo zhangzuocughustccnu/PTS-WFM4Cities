@@ -48,6 +48,11 @@ CENTER_COLOR = "#D9721C"
 GEOMETRY_A_COLOR = "#16263D"
 GEOMETRY_V_COLOR = "#C1440E"
 
+#: Curve of the connected-component panel N(h): the same orange-red as the
+#: normalised exceedance volume, read against the steel blue of the
+#: largest-component share L(h) drawn below it.
+N_CURVE_COLOR = "#C1440E"
+
 #: Pale cyan of the water surface in the three-dimensional views, as in the
 #: city figure of the accompanying study.
 WATER_COLOR = "#CBE3F2"

@@ -3,6 +3,30 @@
 All notable changes follow the principles of
 [Keep a Changelog](https://keepachangelog.com/) and semantic versioning.
 
+## [3.1.19] - 2026-10-15
+
+### Changed
+
+- the connected-component curve `N(h)` and its confidence band are drawn in the
+  orange-red of the palette, while the largest-component share `L(h)` below it
+  keeps the steel blue, so the two stacked panels are told apart at a glance;
+- the *Import points* button is drawn in dark grey with white text, so the action
+  that loads external data stands out from the other buttons;
+- the window is centred on, and fitted to, the visible screen when it opens
+  rather than taking the size of its own content, which could place it off-screen
+  on a smaller display;
+- `PTS_STRUCTURE` selects the structure shown when the window opens
+  (`PTS_STRUCTURE=M2`), alongside the existing `PTS_LANGUAGE`;
+- the package metadata, the citation file, the readme files and the licence now
+  state the two-stage authorship of the toolkit: the early single-file
+  `WFM4Cities` was developed by Zuo Zhang, Yukun Jiang and Zhe Wang, while
+  `PTS-WFM4Cities` from 3.0 onwards is developed independently by Zuo Zhang.
+
+### Added
+
+- `wfm4cities.palette.N_CURVE_COLOR`, the orange-red of the `N(h)` curve;
+- a design and feature overview in `README.md` and `README_zh-CN.md`.
+
 ## [3.1.18] - 2026-10-15
 
 ### Fixed

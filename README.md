@@ -12,9 +12,47 @@ command-line interface, and an optional bilingual desktop interface.
 
 [简体中文说明](README_zh-CN.md)
 
+## Design and feature overview
+
+### Design rules
+
+1. **One scalar surface, one threshold axis.** Any urban attribute carried by a
+   two-dimensional support -- night-time-light intensity, population density,
+   building volume -- becomes a continuous surface, and every result is
+   reported as a curve over the threshold \(h\), never as a single unexplained
+   number.
+2. **Reproducible by construction.** Point patterns, surfaces, threshold
+   sequences and figures are rebuilt from an explicit seed and an explicit
+   configuration, so any run can be repeated exactly.
+3. **One implementation behind the interface and the API.** The desktop window,
+   the command line and the library call the same functions; a figure produced
+   by hand can be reproduced by script.
+4. **One place for the appearance.** Colours live in `wfm4cities.palette`,
+   strings in `wfm4cities.i18n` and fonts in `wfm4cities.fonts`, so the
+   interface, the exported figures and the manuscript always agree.
+
+### Feature overview
+
+| Area | What version 3.1 offers |
+| --- | --- |
+| Structures | the four canonical models `M1`--`M4` of the accompanying study, as one-click presets |
+| Own data | import of any table of two-dimensional coordinates plus one attribute column |
+| Surface | cubic interpolation, nearest-neighbour fill outside the interpolation hull, min--max normalisation to \([0,1]\) |
+| Scan | an ordered threshold sequence with an explicit `inclusive` or `strict` rule |
+| Curves | projected area \(A(h)\), normalised excess volume \(V(h)\), connected components \(N(h)\), largest-component share \(L(h)\) |
+| Views | threshold slider, cut planes in \(x\) and \(y\), ISO/Top/Side viewing angles, animation |
+| Figures | point pattern, three-dimensional surface, gradient-filled vertical sections, geometric responses, \(N(h)\) and \(L(h)\) panels |
+| Interface | bilingual (English by default, Chinese at one click) with Times New Roman and SimSun/STSong typography |
+| Automation | headless API, command-line interface, CSV and JSON export |
+
+The window is laid out as the six panels of the accompanying study: the point
+pattern, the three-dimensional surface, the connected-component count, the two
+vertical sections, the geometric responses and the largest-component share.
+
 ## What the package does
 
 - checks and visualizes point patterns;
+- generates the four canonical structures `M1`--`M4` as one-click presets;
 - interpolates scattered observations with
   `scipy.interpolate.griddata(method="cubic")`;
 - fills cells outside the cubic interpolation hull with nearest-neighbor values;
@@ -22,6 +60,8 @@ command-line interface, and an optional bilingual desktop interface.
 - scans an ordered threshold sequence;
 - calculates projected area \(A(h)\), normalized excess volume \(V(h)\),
   connected-component count \(N(h)\), and largest-component ratio \(L(h)\);
+- imports any table of two-dimensional coordinates plus one attribute column
+  and maps it onto the standard square domain;
 - exports regular grids, full response trajectories, fixed summary features,
   and overview figures;
 - provides optional GeoPandas/PySAL spatial diagnostics.
@@ -69,7 +109,7 @@ Then install:
 The PyPI distribution is named `PTS-WFM4Cities`. The historical 2.6 release is
 still published under the shorter name `WFM4Cities`, which belongs to a
 different PyPI account, so `pip install WFM4Cities` installs that older
-release. Always install `PTS-WFM4Cities` to get version 3.0.
+release. Always install `PTS-WFM4Cities` to get version 3.1.
 
 ### Optional spatial diagnostics
 
@@ -93,6 +133,10 @@ distributions it is a separate operating-system package (for example,
 Running `wfm4cities` with no subcommand also opens the interface. The
 historical `WFM4Cities` command remains available after installation; the
 `python WFM4Cities.py` launcher also remains available in a source checkout.
+
+Two environment variables configure the window when it opens:
+`PTS_LANGUAGE` selects `en` or `zh`, and `PTS_STRUCTURE` selects the
+structure shown first (`M1`, `M2`, `M3` or `M4`, default `M1`).
 
 ### Deterministic headless demonstration
 
@@ -273,8 +317,11 @@ and does not define the numerical algorithm.
 
 ## Authors
 
-WFM4Cities was developed by **Zuo Zhang, Yukun Jiang, and Zhe Wang**.
-See [AUTHORS.md](AUTHORS.md) for details.
+The early single-file version of this toolkit, **WFM4Cities**, was developed
+jointly by **Zuo Zhang, Yukun Jiang, and Zhe Wang**.
+
+The current package, **PTS-WFM4Cities** (3.0 onwards), is developed
+independently by **Zuo Zhang**. See [AUTHORS.md](AUTHORS.md) for details.
 
 ## Citation
 
@@ -290,5 +337,6 @@ Security-sensitive reports should follow [SECURITY.md](SECURITY.md).
 
 ## License
 
-WFM4Cities is distributed under the [MIT License](LICENSE). The historical
-script is retained for provenance and is covered by the same repository license.
+PTS-WFM4Cities is distributed under the [MIT License](LICENSE). The
+historical single-file releases are retained for provenance and are covered
+by the same repository licence.

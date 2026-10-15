@@ -5,22 +5,27 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "PTS-WFM4Cities"
 dynamic = ["version"]
-description = "PTS-WFM4Cities: progressive threshold scanning (PTS) on DEM-inspired urban scalar surfaces"
+description = "PTS-WFM4Cities: progressive threshold scanning (PTS) on DEM-inspired urban scalar surfaces, with four canonical structures, point-data import and a bilingual desktop interface"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [
-  { name = "Zuo Zhang" },
-  { name = "Yukun Jiang", email = "jiangyukunccnu@163.com" },
-  { name = "Zhe Wang" },
+  { name = "Zuo Zhang", email = "zhangzuocug@163.com" },
+]
+maintainers = [
+  { name = "Zuo Zhang", email = "zhangzuocug@163.com" },
 ]
 keywords = [
   "urban morphology",
   "progressive threshold scanning",
+  "PTS",
   "scalar surface",
+  "surface analysis",
+  "point pattern",
   "spatial analysis",
   "DEM-inspired",
+  "urban form",
 ]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
@@ -66,6 +71,7 @@ WFM4Cities = "wfm4cities.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/zhangzuocughustccnu/WFM4Cities"
+PyPI = "https://pypi.org/project/PTS-WFM4Cities/"
 Repository = "https://github.com/zhangzuocughustccnu/WFM4Cities.git"
 Issues = "https://github.com/zhangzuocughustccnu/WFM4Cities/issues"
 Changelog = "https://github.com/zhangzuocughustccnu/WFM4Cities/blob/main/CHANGELOG.md"

@@ -1,22 +1,25 @@
 cff-version: 1.2.0
-message: "If you use WFM4Cities, please cite this software and the associated article when available."
-title: "WFM4Cities: DEM-inspired urban scalar surfaces and progressive threshold scanning"
+message: "If you use PTS-WFM4Cities, please cite this software and the associated article when available."
+title: "PTS-WFM4Cities: progressive threshold scanning on DEM-inspired urban scalar surfaces"
+abstract: "Construction of DEM-inspired urban scalar surfaces from point or grid
+  data and their analysis with progressive threshold scanning (PTS): projected
+  area A(h), normalised excess volume V(h), connected-component count N(h) and
+  largest-component share L(h), through a library API, a command line and a
+  bilingual desktop interface."
 type: software
-version: 3.0.0
-date-released: 2026-08-08
+version: 3.1.19
+date-released: 2026-10-15
 license: MIT
 repository-code: "https://github.com/zhangzuocughustccnu/WFM4Cities"
-url: "https://github.com/zhangzuocughustccnu/WFM4Cities"
+url: "https://pypi.org/project/PTS-WFM4Cities/"
 keywords:
   - urban morphology
   - progressive threshold scanning
   - scalar surface
   - spatial analysis
+  - point pattern
 authors:
   - family-names: Zhang
     given-names: Zuo
     affiliation: Central China Normal University
-  - family-names: Jiang
-    given-names: Yukun
-  - family-names: Wang
-    given-names: Zhe
+    email: zhangzuocug@163.com

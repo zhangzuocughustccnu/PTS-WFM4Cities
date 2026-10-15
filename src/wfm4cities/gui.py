@@ -22,6 +22,43 @@ STRUCTURE_KEYS = ("M1", "M2", "M3", "M4")
 #: display only*.  Exported values are never smoothed.
 SMOOTH_WINDOW = 5
 
+#: Background of the highlighted *Import points* button, which is drawn with
+#: Tk rather than ttk so that the darker background is honoured.
+BUTTON_DARK_BG = "#4A4A4A"
+BUTTON_DARK_ACTIVE_BG = "#333333"
+BUTTON_DARK_FG = "#FFFFFF"
+
+#: Largest window the interface opens with, before it is fitted to the
+#: visible screen.  A content-sized window can otherwise open off-screen.
+WINDOW_MAX_WIDTH = 1560
+WINDOW_MAX_HEIGHT = 980
+
+
+def initial_structure():
+    """Return the structure selected when the window opens.
+
+    ``PTS_STRUCTURE`` may name any of :data:`STRUCTURE_KEYS`; anything else
+    (including an unset variable) falls back to the first structure.
+    """
+
+    import os
+
+    requested = os.environ.get("PTS_STRUCTURE", "").strip().upper()
+    return requested if requested in STRUCTURE_KEYS else STRUCTURE_KEYS[0]
+
+
+def fit_to_screen(window) -> None:
+    """Centre ``window`` on the visible screen, shrinking it if needed."""
+
+    window.update_idletasks()
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+    width = min(window.winfo_reqwidth(), WINDOW_MAX_WIDTH, int(screen_width * 0.96))
+    height = min(window.winfo_reqheight(), WINDOW_MAX_HEIGHT, int(screen_height * 0.94))
+    left = max(0, (screen_width - width) // 2)
+    top = max(0, (screen_height - height) // 4)
+    window.geometry(f"{width}x{height}+{left}+{top}")
+
 
 def smooth_for_display(values, window: int = SMOOTH_WINDOW):
     """Return a moving average of ``values`` for plotting, edges preserved."""
@@ -144,7 +181,7 @@ def run_gui() -> None:
             self._curves: tuple | None = None
             self._curves_key: tuple | None = None
             self._curves_pending = False
-            self.selected_structure = "M1"
+            self.selected_structure = initial_structure()
 
             self.variables = {
                 "num_points": tk.IntVar(value=150),
@@ -163,7 +200,7 @@ def run_gui() -> None:
             self.status = tk.StringVar(value="")
             self._build_layout(ttk, Figure, FigureCanvasTkAgg)
             self.retranslate()
-            self.generate()
+            self.apply_structure(self.selected_structure)
 
         # ------------------------------------------------------------------
         # language handling
@@ -344,7 +381,28 @@ def run_gui() -> None:
                 ("button_export", self.export),
             )
             for offset, (key, command) in enumerate(actions):
-                self._button(controls, key, command).grid(
+                if key == "button_import":
+                    # Drawn with Tk rather than ttk so the dark background is
+                    # honoured: the import action is the highlighted one.
+                    widget = self._tk.Button(
+                        controls,
+                        text="",
+                        command=command,
+                        bg=BUTTON_DARK_BG,
+                        fg=BUTTON_DARK_FG,
+                        activebackground=BUTTON_DARK_ACTIVE_BG,
+                        activeforeground=BUTTON_DARK_FG,
+                        disabledforeground="#C8C8C8",
+                        relief="raised",
+                        bd=1,
+                        highlightthickness=0,
+                        padx=6,
+                        pady=3,
+                    )
+                    self._text_widgets.append((widget, key))
+                else:
+                    widget = self._button(controls, key, command)
+                widget.grid(
                     row=base + 4 + offset, column=0, columnspan=2, sticky="ew", pady=2
                 )
 
@@ -797,7 +855,7 @@ def run_gui() -> None:
                 if name not in curves["N"]:
                     continue
                 mean, low, high = curves["N"][name]
-                colour = palette.series_color(index)
+                colour = palette.N_CURVE_COLOR
                 count_ax.fill_between(
                     thresholds, low, high, color=colour, alpha=0.18, linewidth=0
                 )
@@ -1015,4 +1073,5 @@ def run_gui() -> None:
                 self._messagebox.showerror(self.t("window_title"), str(exc))
 
     PTSApplication(root)
+    fit_to_screen(root)
     root.mainloop()
