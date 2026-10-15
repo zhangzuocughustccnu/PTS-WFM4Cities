@@ -3,6 +3,15 @@
 All notable changes follow the principles of
 [Keep a Changelog](https://keepachangelog.com/) and semantic versioning.
 
+## [3.1.16] - 2026-10-15
+
+### Fixed
+
+- the window is painted before the four-structure curves are computed.  Since
+  3.1.14 the computation ran before the event loop started, so the interface
+  stayed invisible for many seconds and looked as if it had not opened;
+- the curves are computed once, after first paint, on a modest grid, and
+  cached; the two panels show a short placeholder while that happens.
 ## [3.1.15] - 2026-10-15
 
 ### Changed

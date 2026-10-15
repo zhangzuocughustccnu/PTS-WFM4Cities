@@ -143,6 +143,7 @@ def run_gui() -> None:
             self._status: tuple[str, dict] = ("status_ready", {})
             self._curves: tuple | None = None
             self._curves_key: tuple | None = None
+            self._curves_pending = False
 
             self.variables = {
                 "num_points": tk.IntVar(value=150),
@@ -377,12 +378,7 @@ def run_gui() -> None:
         # actions
         # ------------------------------------------------------------------
         def structure_curves(self):
-            """Mean N(h) and L(h) of the four structures with 10--90% bands.
-
-            Mirrors panel c1/c2 of Figure 3 of the accompanying study: the four
-            canonical structures are generated as their stochastic presets, each
-            repeated with different seeds, and the bands summarise the spread.
-            """
+            """Return the cached four-structure curves, or ``None`` when absent."""
 
             key_now = (
                 int(self.variables["grid_size"].get()),
@@ -390,35 +386,58 @@ def run_gui() -> None:
             )
             if self._curves is not None and self._curves_key == key_now:
                 return self._curves
-            self.set_status("status_structures")
-            self.root.update_idletasks()
-            thresholds = np.linspace(0.0, 0.90, 41)
-            curves: dict[str, dict[str, tuple]] = {"N": {}, "L": {}}
-            for name in STRUCTURE_KEYS:
-                counts: list = []
-                shares: list = []
-                for repeat in range(8):
-                    settings = model_config(
-                        name, seed=1000 + 37 * repeat, grid_size=key_now[0]
-                    )
-                    model = build_surface(settings)
-                    result = progressive_threshold_scan(
-                        model.grid_z, thresholds, rule=key_now[1]
-                    )
-                    counts.append(np.asarray(result.component_count, dtype=float))
-                    shares.append(
-                        np.asarray(result.largest_component_ratio, dtype=float)
-                    )
-                for label, stack in (("N", counts), ("L", shares)):
-                    values = np.asarray(stack)
-                    curves[label][name] = (
-                        values.mean(axis=0),
-                        np.percentile(values, 5, axis=0),
-                        np.percentile(values, 95, axis=0),
-                    )
-            self._curves = (thresholds, curves)
-            self._curves_key = key_now
-            return self._curves
+            return None
+
+        def schedule_structure_curves(self) -> None:
+            """Compute the four-structure curves after the window has painted."""
+
+            if self._curves_pending:
+                return
+            self._curves_pending = True
+            self.root.after(150, self._compute_structure_curves)
+
+        def _compute_structure_curves(self) -> None:
+            """Mean N(h) and L(h) of the four structures with 10--90% bands.
+
+            Panel c1/c2 of Figure 3 of the accompanying study.  The computation
+            runs after the interface is on screen, on a modest grid, and the
+            result is cached, so the first paint is never blocked.
+            """
+
+            self._curves_pending = False
+            try:
+                resolution = min(int(self.variables["grid_size"].get()), 60)
+                rule = str(self.variables["rule"].get())
+                thresholds = np.linspace(0.0, 0.90, 41)
+                curves: dict[str, dict[str, tuple]] = {"N": {}, "L": {}}
+                for name in STRUCTURE_KEYS:
+                    counts: list = []
+                    shares: list = []
+                    for repeat in range(5):
+                        settings = model_config(
+                            name, seed=1000 + 37 * repeat, grid_size=resolution
+                        )
+                        model = build_surface(settings)
+                        result = progressive_threshold_scan(
+                            model.grid_z, thresholds, rule=rule
+                        )
+                        counts.append(np.asarray(result.component_count, dtype=float))
+                        shares.append(
+                            np.asarray(result.largest_component_ratio, dtype=float)
+                        )
+                    for label, stack in (("N", counts), ("L", shares)):
+                        values = np.asarray(stack)
+                        curves[label][name] = (
+                            values.mean(axis=0),
+                            np.percentile(values, 5, axis=0),
+                            np.percentile(values, 95, axis=0),
+                        )
+                    self.root.update_idletasks()
+                self._curves = (thresholds, curves)
+                self._curves_key = (int(self.variables["grid_size"].get()), rule)
+                self.draw()
+            except Exception as exc:  # pragma: no cover - defensive
+                self._messagebox.showerror(self.t("window_title"), str(exc))
 
         def apply_structure(self, key: str) -> None:
             """Load the preset of a canonical structure and redraw."""
@@ -469,6 +488,7 @@ def run_gui() -> None:
                 self._curves = None
                 self._scan()
                 self.draw()
+                self.schedule_structure_curves()
                 self.set_status("status_done")
             except Exception as exc:
                 self._messagebox.showerror(self.t("window_title"), str(exc))
@@ -732,9 +752,43 @@ def run_gui() -> None:
             surface_ax.set_title(self.t("plot_surface", h=threshold))
 
             # ---- N(h) of the four structures (Figure 3c1) ------------------
-            thresholds, curves = self.structure_curves()
+            cached = self.structure_curves()
+            if cached is None:
+                self.schedule_structure_curves()
+                placeholder = self.figure.add_subplot(grid[0, 2])
+                placeholder.text(
+                    0.5,
+                    0.5,
+                    self.t("status_structures"),
+                    ha="center",
+                    va="center",
+                    fontsize=8,
+                    color=palette.SPINE_GRAY,
+                    transform=placeholder.transAxes,
+                )
+                placeholder.set_title(self.t("plot_ripley"))
+                self._style(placeholder)
+                idle = self.figure.add_subplot(grid[1, 2])
+                idle.text(
+                    0.5,
+                    0.5,
+                    self.t("status_structures"),
+                    ha="center",
+                    va="center",
+                    fontsize=8,
+                    color=palette.SPINE_GRAY,
+                    transform=idle.transAxes,
+                )
+                idle.set_title(self.t("plot_topology"))
+                self._style(idle)
+                thresholds = np.linspace(0.0, 0.90, 41)
+                curves = {"N": {}, "L": {}}
+            else:
+                thresholds, curves = cached
             count_ax = self.figure.add_subplot(grid[0, 2])
             for index, name in enumerate(STRUCTURE_KEYS):
+                if name not in curves["N"]:
+                    continue
                 mean, low, high = curves["N"][name]
                 colour = palette.series_color(index)
                 count_ax.fill_between(
@@ -794,6 +848,8 @@ def run_gui() -> None:
             # ---- L(h) of the four structures (Figure 3c2) ------------------
             share_ax = self.figure.add_subplot(grid[1, 2])
             for index, name in enumerate(STRUCTURE_KEYS):
+                if name not in curves["L"]:
+                    continue
                 mean, low, high = curves["L"][name]
                 colour = palette.series_color(index)
                 share_ax.fill_between(
