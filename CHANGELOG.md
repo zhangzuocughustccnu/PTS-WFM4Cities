@@ -3,6 +3,13 @@
 All notable changes follow the principles of
 [Keep a Changelog](https://keepachangelog.com/) and semantic versioning.
 
+## [3.1.13] - 2026-10-15
+
+### Changed
+
+- the middle column is 50% wider, so the geometric responses are wider and the
+  three-dimensional surface has more room; every panel keeps its previous
+  height, so the two rows stay aligned.
 ## [3.1.12] - 2026-10-15
 
 ### Changed
