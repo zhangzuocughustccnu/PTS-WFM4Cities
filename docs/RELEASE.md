@@ -12,10 +12,10 @@
 
 Recommended commands:
 
-    git checkout -b release/3.1.20
+    git checkout -b release/3.1.22
     git add --all
-    git commit -m "Prepare PTS-WFM4Cities 3.1.20"
-    git push --set-upstream origin release/3.1.20
+    git commit -m "Prepare PTS-WFM4Cities 3.1.22"
+    git push --set-upstream origin release/3.1.22
 
 Open and merge a pull request after CI succeeds.
 
@@ -55,10 +55,10 @@ does not store a long-lived API token. In PyPI:
 
 1. create or select the `PTS-WFM4Cities` project;
 2. add a trusted publisher for owner `zhangzuocughustccnu`, repository
-   `WFM4Cities`, workflow `publish.yml`, environment `pypi`;
+   `PTS-WFM4Cities`, workflow `publish.yml`, environment `pypi`;
 3. in GitHub, create the protected `pypi` environment and require manual
    approval;
-4. publish a GitHub Release tagged `v3.1.20`.
+4. publish a GitHub Release tagged `v3.1.22`.
 
 The workflow builds, checks, and uploads the distributions after the release is
 published.

@@ -7,6 +7,10 @@ Scanning，PTS）。新版同时提供可复用的Python API、命令行批处�
 
 [English README](README.md)
 
+本项目现在托管在与发行名一致的仓库
+[zhangzuocughustccnu/PTS-WFM4Cities](https://github.com/zhangzuocughustccnu/PTS-WFM4Cities)；原仓库
+[zhangzuocughustccnu/WFM4Cities](https://github.com/zhangzuocughustccnu/WFM4Cities) 作为早期单文件版本的归档保留。
+
 ## 设计理念与功能总览
 
 ### 设计原则
@@ -69,7 +73,7 @@ Scanning，PTS）。新版同时提供可复用的Python API、命令行批处�
 
 从GitHub安装当前版本：
 
-    git clone https://github.com/zhangzuocughustccnu/WFM4Cities.git
+    git clone https://github.com/zhangzuocughustccnu/PTS-WFM4Cities.git
     cd WFM4Cities
     python -m venv .venv
 

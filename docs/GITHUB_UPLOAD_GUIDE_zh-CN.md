@@ -10,7 +10,7 @@
 ## 2. 推荐方式：GitHub Desktop
 
 1. 用GitHub Desktop克隆
-   `https://github.com/zhangzuocughustccnu/WFM4Cities`。
+   `https://github.com/zhangzuocughustccnu/PTS-WFM4Cities`。
 2. 新建分支 `release/3.0.0`。
 3. 将本压缩包根目录内的全部文件和文件夹复制到本地仓库根目录。
 4. 删除仓库原有的 `water-flooding model.py`。原始

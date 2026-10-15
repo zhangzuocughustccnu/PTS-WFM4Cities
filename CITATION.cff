@@ -7,10 +7,10 @@ abstract: "Construction of DEM-inspired urban scalar surfaces from point or grid
   largest-component share L(h), through a library API, a command line and a
   bilingual desktop interface."
 type: software
-version: 3.1.21
+version: 3.1.22
 date-released: 2026-10-15
 license: MIT
-repository-code: "https://github.com/zhangzuocughustccnu/WFM4Cities"
+repository-code: "https://github.com/zhangzuocughustccnu/PTS-WFM4Cities"
 url: "https://pypi.org/project/PTS-WFM4Cities/"
 keywords:
   - urban morphology

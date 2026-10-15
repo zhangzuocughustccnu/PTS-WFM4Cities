@@ -1,6 +1,6 @@
 # PTS-WFM4Cities
 
-[![CI](https://github.com/zhangzuocughustccnu/WFM4Cities/actions/workflows/ci.yml/badge.svg)](https://github.com/zhangzuocughustccnu/WFM4Cities/actions/workflows/ci.yml)
+[![CI](https://github.com/zhangzuocughustccnu/PTS-WFM4Cities/actions/workflows/ci.yml/badge.svg)](https://github.com/zhangzuocughustccnu/PTS-WFM4Cities/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/PTS-WFM4Cities.svg)](https://pypi.org/project/PTS-WFM4Cities/)
 [![Python](https://img.shields.io/pypi/pyversions/PTS-WFM4Cities.svg)](https://pypi.org/project/PTS-WFM4Cities/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -11,6 +11,11 @@ Threshold Scanning (PTS). It supports a transparent point-to-surface workflow, a
 command-line interface, and an optional bilingual desktop interface.
 
 [简体中文说明](README_zh-CN.md)
+
+The package is developed in
+[zhangzuocughustccnu/PTS-WFM4Cities](https://github.com/zhangzuocughustccnu/PTS-WFM4Cities). The original repository,
+[zhangzuocughustccnu/WFM4Cities](https://github.com/zhangzuocughustccnu/WFM4Cities), is kept as an archive of the earlier
+single-file releases.
 
 ## Design and feature overview
 
@@ -85,7 +90,7 @@ environment.
 
 ### Install from the repository
 
-    git clone https://github.com/zhangzuocughustccnu/WFM4Cities.git
+    git clone https://github.com/zhangzuocughustccnu/PTS-WFM4Cities.git
     cd WFM4Cities
     python -m venv .venv
 
@@ -280,7 +285,7 @@ See [Method conventions](docs/METHOD.md) for the exact definitions.
 
 ## Project structure
 
-    WFM4Cities/
+    PTS-WFM4Cities/
     ├── src/wfm4cities/       # maintained implementation
     ├── src/WFM4Cities/       # compatibility namespace for 2.x users
     ├── tests/                # automated regression tests

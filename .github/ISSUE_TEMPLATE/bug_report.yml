@@ -1,5 +1,5 @@
 name: Bug report
-description: Report a reproducible WFM4Cities problem
+description: Report a reproducible PTS-WFM4Cities problem
 title: "[Bug]: "
 labels: [bug]
 body:
@@ -9,7 +9,7 @@ body:
   - type: input
     id: version
     attributes:
-      label: WFM4Cities version
+      label: PTS-WFM4Cities version
       placeholder: "3.0.0"
     validations:
       required: true

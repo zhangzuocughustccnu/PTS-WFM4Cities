@@ -3,6 +3,20 @@
 All notable changes follow the principles of
 [Keep a Changelog](https://keepachangelog.com/) and semantic versioning.
 
+## [3.1.22] - 2026-10-15
+
+### Changed
+
+- the project is now hosted under a repository name that matches the
+  distribution name: <https://github.com/zhangzuocughustccnu/PTS-WFM4Cities>.
+  The original repository,
+  <https://github.com/zhangzuocughustccnu/WFM4Cities>, is kept as an archive of
+  the earlier single-file releases;
+- the CI badge, the clone command, the project URLs of the package metadata and
+  the citation file point to the new repository;
+- the trusted-publisher note in `docs/RELEASE.md` names the new repository, and
+  the issue templates speak of PTS-WFM4Cities.
+
 ## [3.1.21] - 2026-10-15
 
 ### Changed
@@ -304,4 +318,4 @@ All notable changes follow the principles of
 
 - historical PyPI release containing the original desktop script.
 
-[3.0.0]: https://github.com/zhangzuocughustccnu/WFM4Cities/releases/tag/v3.0.0
+[3.0.0]: https://github.com/zhangzuocughustccnu/PTS-WFM4Cities/releases/tag/v3.0.0

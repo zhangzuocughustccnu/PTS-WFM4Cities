@@ -16,8 +16,9 @@ The current package, `PTS-WFM4Cities`, is developed independently by:
 - Zuo Zhang (张祚), Central China Normal University.
 
 The distribution name changed with version 3.0: the package is published as
-`PTS-WFM4Cities` on PyPI, while the repository keeps its original address,
-<https://github.com/zhangzuocughustccnu/WFM4Cities>.
+`PTS-WFM4Cities` on PyPI, and from version 3.1.22 it is also hosted under the
+matching repository name, <https://github.com/zhangzuocughustccnu/PTS-WFM4Cities>. The original repository,
+<https://github.com/zhangzuocughustccnu/WFM4Cities>, is kept as a historical archive.
 
 ## Contact
 

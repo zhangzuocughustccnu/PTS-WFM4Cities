@@ -70,11 +70,11 @@ wfm4cities = "wfm4cities.cli:main"
 WFM4Cities = "wfm4cities.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/zhangzuocughustccnu/WFM4Cities"
+Homepage = "https://github.com/zhangzuocughustccnu/PTS-WFM4Cities"
 PyPI = "https://pypi.org/project/PTS-WFM4Cities/"
-Repository = "https://github.com/zhangzuocughustccnu/WFM4Cities.git"
-Issues = "https://github.com/zhangzuocughustccnu/WFM4Cities/issues"
-Changelog = "https://github.com/zhangzuocughustccnu/WFM4Cities/blob/main/CHANGELOG.md"
+Repository = "https://github.com/zhangzuocughustccnu/PTS-WFM4Cities.git"
+Issues = "https://github.com/zhangzuocughustccnu/PTS-WFM4Cities/issues"
+Changelog = "https://github.com/zhangzuocughustccnu/PTS-WFM4Cities/blob/main/CHANGELOG.md"
 
 [tool.setuptools]
 package-dir = { "" = "src" }
