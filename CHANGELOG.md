@@ -3,6 +3,23 @@
 All notable changes follow the principles of
 [Keep a Changelog](https://keepachangelog.com/) and semantic versioning.
 
+## [3.1.23] - 2026-10-15
+
+### Changed
+
+- every page that is English by intent is now written in English only: the 3.1.21
+  entry below no longer quotes the Chinese interface string, the readme link to
+  the Chinese readme carries an English label, and the release notes of 3.1.22
+  were corrected in place;
+- the Chinese-language documents are declared in the readme and carry an English
+  provenance header: `README_zh-CN.md`,
+  `docs/GITHUB_UPLOAD_GUIDE_zh-CN.md` and `docs/REPOSITORY_AUDIT_zh-CN.md`. The
+  Chinese release names of the authors in `AUTHORS.md` are kept;
+- the Chinese assertion in `tests/test_interface_helpers.py` uses the escaped
+  style of that file;
+- `docs/RELEASE.md` documents the trusted-publishing path (the GitHub side is
+  ready, the PyPI record is pending) next to the API-token fallback.
+
 ## [3.1.22] - 2026-10-15
 
 ### Changed
