@@ -816,10 +816,10 @@ def run_gui() -> None:
             share_ax.legend(frameon=False, fontsize=6.5, ncols=2, loc="lower right")
             self._style(share_ax)
 
-            # ---- vertical sections, coloured by height ---------------------
-            from matplotlib.collections import LineCollection
+            # ---- vertical sections, coloured by the height of the surface --
+            from matplotlib.patches import Polygon
 
-            section_grid = grid[1, 0].subgridspec(2, 1, hspace=0.06)
+            section_grid = grid[1, 0].subgridspec(2, 1, hspace=0.30)
             axis_z = np.asarray(self.model.grid_z)
             xs = np.asarray(self.model.grid_x[0, :])
             ys = np.asarray(self.model.grid_y[:, 0])
@@ -846,28 +846,50 @@ def run_gui() -> None:
                 )
             )
             cmap = palette.surface_cmap()
+            bottom = -0.02
 
             def draw_section(ax, horizontal, profile, title):
-                points = np.column_stack((horizontal, profile))
-                segments = np.stack((points[:-1], points[1:]), axis=1)
-                colours = cmap(0.5 * (profile[:-1] + profile[1:]))
-                ax.add_collection(
-                    LineCollection(segments, colors=colours, linewidths=2.0)
+                """Fill below the profile with the vertical Z ramp of the surface."""
+
+                low = float(horizontal.min())
+                high = float(horizontal.max())
+                gradient = np.linspace(0.0, 1.0, 256).reshape(-1, 1)
+                image = ax.imshow(
+                    gradient,
+                    extent=(low, high, bottom, 1.02),
+                    origin="lower",
+                    aspect="auto",
+                    cmap=cmap,
+                    interpolation="bilinear",
+                    zorder=1,
                 )
-                ax.fill_between(
+                vertices = np.column_stack(
+                    (
+                        np.concatenate((horizontal, horizontal[::-1])),
+                        np.concatenate((profile, np.full_like(profile, bottom))),
+                    )
+                )
+                clip = Polygon(
+                    vertices, closed=True, facecolor="none", edgecolor="none"
+                )
+                clip.set_transform(ax.transData)
+                image.set_clip_path(clip)
+                ax.plot(
                     horizontal,
                     profile,
-                    threshold,
-                    where=profile > threshold,
-                    color=palette.WATER_COLOR,
-                    alpha=0.30,
-                    linewidth=0,
+                    color=palette.SURFACE_RAMP[-1],
+                    linewidth=1.5,
+                    zorder=3,
                 )
                 ax.axhline(
-                    threshold, color=palette.SPINE_GRAY, linestyle="--", linewidth=0.9
+                    threshold,
+                    color=palette.SURFACE_RAMP[0],
+                    linestyle="--",
+                    linewidth=1.1,
+                    zorder=4,
                 )
-                ax.set_xlim(float(horizontal.min()), float(horizontal.max()))
-                ax.set_ylim(-0.02, 1.02)
+                ax.set_xlim(low, high)
+                ax.set_ylim(bottom, 1.02)
                 ax.set_title(title, fontsize=7)
                 ax.tick_params(labelsize=6)
                 self._style(ax)

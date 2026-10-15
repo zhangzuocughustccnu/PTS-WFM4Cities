@@ -3,6 +3,14 @@
 All notable changes follow the principles of
 [Keep a Changelog](https://keepachangelog.com/) and semantic versioning.
 
+## [3.1.15] - 2026-10-15
+
+### Changed
+
+- the vertical sections are filled below the profile with a gradient that
+  follows the height of the surface, using the same colour-to-value rule as the
+  three-dimensional panel; the profile is drawn in the high end of the ramp and
+  the water level as a dashed line in the low end.
 ## [3.1.14] - 2026-10-15
 
 ### Changed
