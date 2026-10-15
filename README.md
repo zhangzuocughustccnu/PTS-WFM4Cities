@@ -118,7 +118,7 @@ release. Always install `PTS-WFM4Cities` to get version 3.1.
 ### Conda environment
 
     conda env create -f environment.yml
-    conda activate wfm4cities-3.0
+    conda activate pts-wfm4cities
 
 Tkinter is included with standard Python on Windows and macOS. On some Linux
 distributions it is a separate operating-system package (for example,

@@ -1,4 +1,4 @@
-name: wfm4cities-3.0
+name: pts-wfm4cities
 channels:
   - conda-forge
 dependencies:

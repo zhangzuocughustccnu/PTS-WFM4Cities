@@ -1,13 +1,16 @@
 # Architecture
 
-WFM4Cities 3.0 separates numerical analysis from presentation.
+PTS-WFM4Cities 3.1 separates numerical analysis from presentation.
 
 | Module | Responsibility |
 |---|---|
-| `core.py` | synthetic points, local density, interpolation, normalization, basic diagnostics |
+| `core.py` | synthetic points, local density, interpolation, normalization, the four canonical presets, affine point standardisation, basic diagnostics |
 | `pts.py` | A(h), V(h), N(h), L(h), and fixed feature extraction |
-| `io.py` | explicit CSV and JSON contracts |
+| `io.py` | explicit CSV and JSON contracts, including the point table read by the import dialogue |
 | `plotting.py` | non-interactive Matplotlib figures |
+| `palette.py` | every colour of the interface, the command line and the exported figures |
+| `i18n.py` | every interface string, in English and Chinese |
+| `fonts.py` | Times New Roman for Latin and SimSun/STSong for Chinese, without redistributing a font file |
 | `spatial.py` | optional GeoPandas/PySAL Moran diagnostic |
 | `cli.py` | headless and GUI command routing |
 | `gui.py` | lazily loaded Tk desktop interface |
@@ -30,7 +33,8 @@ Each stage can be independently replaced. Controlled grids may enter at stage
 
 ## Compatibility
 
-The distribution remains named `WFM4Cities`. The canonical import namespace
-is lowercase `wfm4cities`, as recommended for Python packages. The historical
-`WFM4Cities` namespace and `WFM4Cities.Water_flooding_Model:main` entry
-remain as thin forwarders.
+The distribution is named `PTS-WFM4Cities` from version 3.0 onwards; the
+historical 2.6 release keeps the name `WFM4Cities` and belongs to a different
+PyPI account. The canonical import namespace is lowercase `wfm4cities`, as
+recommended for Python packages. The historical `WFM4Cities` namespace and
+`WFM4Cities.Water_flooding_Model:main` entry remain as thin forwarders.

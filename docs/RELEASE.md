@@ -12,10 +12,10 @@
 
 Recommended commands:
 
-    git checkout -b release/3.0.0
+    git checkout -b release/3.1.20
     git add --all
-    git commit -m "Prepare WFM4Cities 3.0.0"
-    git push --set-upstream origin release/3.0.0
+    git commit -m "Prepare PTS-WFM4Cities 3.1.20"
+    git push --set-upstream origin release/3.1.20
 
 Open and merge a pull request after CI succeeds.
 
@@ -41,25 +41,42 @@ fresh environment.
 ## Distribution name
 
 The `WFM4Cities` project on PyPI belongs to a different account and cannot
-receive uploads from the maintainers of this repository. Version 3.0.0 is
-therefore published under the distribution name `PTS-WFM4Cities`, which is
-owned by `zhangzuocughustccnu`. Wherever the notes below mention the
-`WFM4Cities` project, read `PTS-WFM4Cities` for releases of this repository.
+receive uploads from the maintainers of this repository. Releases from version
+3.0 onwards are therefore published under the distribution name
+`PTS-WFM4Cities`, which is owned by `zhangzuocughustccnu`. Wherever the notes
+below mention the `WFM4Cities` project, read `PTS-WFM4Cities` for releases of
+this repository. Installing `WFM4Cities` from PyPI still resolves to the
+historical 2.6 release of that other project.
 
 ## Trusted publishing
 
 The included `.github/workflows/publish.yml` uses PyPI trusted publishing and
 does not store a long-lived API token. In PyPI:
 
-1. create or select the `WFM4Cities` project;
+1. create or select the `PTS-WFM4Cities` project;
 2. add a trusted publisher for owner `zhangzuocughustccnu`, repository
    `WFM4Cities`, workflow `publish.yml`, environment `pypi`;
 3. in GitHub, create the protected `pypi` environment and require manual
    approval;
-4. publish a GitHub Release tagged `v3.0.0`.
+4. publish a GitHub Release tagged `v3.1.20`.
 
 The workflow builds, checks, and uploads the distributions after the release is
 published.
+
+## Manual release (used for the 3.1 series)
+
+Trusted publishing needs a one-time configuration in PyPI. Until that is in
+place, releases are uploaded from the machine that holds the API token in
+`~/.pypirc`, with the proxy environment cleared because the local proxy
+interrupts long uploads:
+
+    $env:HTTP_PROXY=''; $env:HTTPS_PROXY=''; $env:ALL_PROXY=''
+    python -m build
+    python -m twine check dist/*
+    python -m twine upload --skip-existing dist/*
+
+Then install the uploaded wheel into the reference environment, open the
+interface, and archive the screenshot and the wheels with the release notes.
 
 ## Permanent research archive
 

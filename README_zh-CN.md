@@ -86,7 +86,7 @@ Scanning，PTS）。新版同时提供可复用的Python API、命令行批处�
     python -m pip install --upgrade pip
     python -m pip install -e .
 
-3.0.0已发布，可直接安装：
+3.1版已发布，可直接安装：
 
     python -m pip install PTS-WFM4Cities
 
@@ -101,7 +101,7 @@ PyPI上的发行名为 `PTS-WFM4Cities`。历史版本2.6仍以较短的 `WFM4Ci
 使用Conda：
 
     conda env create -f environment.yml
-    conda activate wfm4cities-3.0
+    conda activate pts-wfm4cities
 
 Windows和macOS的标准Python通常已含Tkinter。部分Linux系统需要另行安装，
 例如Debian/Ubuntu可使用 `sudo apt install python3-tk`。

@@ -28,6 +28,30 @@ paper notation are both available:
 | `component_count` | `N` |
 | `largest_component_ratio` | `L` |
 
+## Canonical structures
+
+- `MODEL_LABELS`: the four preset names, `M1`--`M4`.
+- `MODEL_PRESETS`: their validated configurations.
+- `model_config(key, **overrides)`: the configuration of one preset.
+- `build_model_surface(key, **overrides)`: the points and surface of one preset.
+
+## Importing an external point table
+
+- `standardize_points(points, values, **kwargs)`: affine mapping onto the
+  standard square domain plus min--max normalisation of the selected attribute.
+- `StandardizationReport`: the scales and offsets that were applied.
+- `read_point_table(path, ...)`: read a coordinate table; `list_csv_columns(path)`
+  returns its column names for the import dialogue.
+
+## Appearance
+
+- `wfm4cities.palette`: `SURFACE_RAMP`, `DOMAIN_FILL`, `POINT_COLOR`,
+  `CENTER_COLOR`, `N_CURVE_COLOR`, `SECTION_RAMP`, `surface_cmap()`,
+  `section_cmap()`, `series_color()`, `series_marker()`.
+- `wfm4cities.i18n`: `translate()`, `normalise()`, `DEFAULT_LANGUAGE`.
+- `wfm4cities.fonts`: `apply()`, `register_font_files()`, `resolved_families()`,
+  and the directory named by `PTS_FONT_DIR`.
+
 ## Input/output
 
 - `read_point_csv`

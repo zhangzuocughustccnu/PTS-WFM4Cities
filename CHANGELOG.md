@@ -3,6 +3,18 @@
 All notable changes follow the principles of
 [Keep a Changelog](https://keepachangelog.com/) and semantic versioning.
 
+## [3.1.20] - 2026-10-15
+
+### Changed
+
+- the design and API documentation is brought up to version 3.1: the module
+  table of `docs/ARCHITECTURE.md` now lists `palette.py`, `i18n.py` and
+  `fonts.py`, and `docs/API.md` documents the canonical-structure presets, the
+  point-table import and the appearance modules;
+- the Conda environment is named `pts-wfm4cities`;
+- `docs/RELEASE.md` records the manual upload procedure used for the 3.1 series
+  and the current release tag.
+
 ## [3.1.19] - 2026-10-15
 
 ### Changed
