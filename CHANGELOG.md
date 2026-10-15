@@ -3,6 +3,17 @@
 All notable changes follow the principles of
 [Keep a Changelog](https://keepachangelog.com/) and semantic versioning.
 
+## [3.1.24] - 2026-10-15
+
+### Changed
+
+- this release is published by `.github/workflows/publish.yml` with PyPI
+  trusted publishing: the distributions are built by continuous integration from
+  the tagged commit and uploaded with a short-lived OIDC token, so no long-lived
+  API token is involved. The `pypi` environment requires the maintainer's
+  approval before the upload starts;
+- the package itself is unchanged from 3.1.23 apart from the version number.
+
 ## [3.1.23] - 2026-10-15
 
 ### Changed
